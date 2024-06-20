@@ -36,9 +36,10 @@ namespace ApplicationCore.Services
             return await repository.GetAll();
         }
 
-        public async Task<Usuario> GetByEmail(string email)
+        public async Task<Usuario> GetByEmail(string email,string pass)
         {
-            return await repository.GetByEmail(email);
+            string password= Cryptography.EncrypthAES(pass);
+            return await repository.GetByEmail(email, password);
         }
 
         public async Task<Usuario> GetById(int id)

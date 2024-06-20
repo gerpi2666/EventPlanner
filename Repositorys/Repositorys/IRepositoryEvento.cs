@@ -11,7 +11,7 @@ namespace Repositorys.Repositorys
     {
         Task<List<Evento>> GetEventos();
         Task<Evento> GetById(int id);
-        Task<Evento> Create(Evento evento);
+        Task<int> Create(Evento evento);
         Task<Evento> Uptade(Evento evento);
         void Delete(int id);    
     }

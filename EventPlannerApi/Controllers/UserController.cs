@@ -1,15 +1,15 @@
-﻿using ApplicationCore.Services;
+﻿using AplicationCore.Utils;
+using ApplicationCore.Services;
 using EventPlannerApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositorys.Models;
-using System.Configuration;
 using System.Net;
 
 namespace EventPlannerApi.Controllers
 {
-    [Route("api/user")]
     [ApiController]
+    [Route("User")]
     public class UsersController : ControllerBase
     {
         private readonly IConfiguration Configuration;
@@ -19,7 +19,7 @@ namespace EventPlannerApi.Controllers
         }
 
         [HttpGet]
-        [Route("/getAll")]
+        [Route("getAll")]
         public async Task<IActionResult> GetAll()
         {
             ResponseModel response = new ResponseModel();
@@ -29,7 +29,7 @@ namespace EventPlannerApi.Controllers
 
                 List<Usuario> users = await service.GetAll();
 
-                if (users == null || users.Count ==0)
+                if (users == null || users.Count == 0)
                 {
                     response.StatusCode = (int)HttpStatusCode.NotFound;
                     response.Message = "Eventos no encontrados";
@@ -53,7 +53,7 @@ namespace EventPlannerApi.Controllers
         }
 
         [HttpGet]
-        [Route("/getById")]
+        [Route("getById")]
         public async Task<IActionResult> GetById(int id)
         {
             ResponseModel response = new ResponseModel();
@@ -87,7 +87,7 @@ namespace EventPlannerApi.Controllers
         }
 
         [HttpPost]
-        [Route("/create")]
+        [Route("create")]
         public async Task<IActionResult> Create(Usuario user)
         {
             ResponseModel response = new ResponseModel();
@@ -121,7 +121,7 @@ namespace EventPlannerApi.Controllers
         }
 
         [HttpPost]
-        [Route("/update")]
+        [Route("update")]
         public async Task<IActionResult> Update(Usuario user)
         {
             ResponseModel response = new ResponseModel();
@@ -141,6 +141,51 @@ namespace EventPlannerApi.Controllers
                     response.StatusCode = (int)HttpStatusCode.OK;
                     response.Message = "Reporte encontrado";
                     response.Data = user1;
+                }
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                response.Message = e.Message;
+
+                return StatusCode(response.StatusCode, response);
+            }
+        }
+
+
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> Login(LoginModel user)
+        {
+            ResponseModel response = new ResponseModel();
+            try
+            {
+                IServiceUsuario service = new ServiceUsuario(Configuration);
+
+                Usuario user1 = await service.GetByEmail(user.Email, user.Password);
+
+                if (user1 == null)
+                {
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    response.Message = "Eventos no encontrados";
+                }
+                else
+                {
+                    if (user1.Password != Cryptography.EncrypthAES(user.Password))
+                    {
+                        response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                        response.Message = "Credenciales invalidas";
+                        response.Data = null;
+                    }
+                    else
+                    {
+                        response.StatusCode = (int)HttpStatusCode.OK;
+                        response.Message = "Credenciales validas";
+                        response.Data = user1;
+                    }
+
                 }
 
                 return Ok(response);

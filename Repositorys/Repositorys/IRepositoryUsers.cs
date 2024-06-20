@@ -13,7 +13,7 @@ namespace Repositorys.Repositorys
         Task<Usuario> GetById(int id);
         Task<int> Create(Usuario user);
         Task<Usuario> Update(Usuario user);
-        Task<Usuario> GetByEmail(string email);
+        Task<Usuario> GetByEmail(string email, string password);
         Task<int> Delete(int id);
 
 

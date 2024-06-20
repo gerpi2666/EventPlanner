@@ -184,7 +184,7 @@ namespace Repositorys.Repositorys
             }
         }
 
-        public async Task<Usuario> GetByEmail(string email)
+        public async Task<Usuario> GetByEmail(string email,string password)
         {
             try
             {
@@ -198,6 +198,7 @@ namespace Repositorys.Repositorys
                     var command = new SqlCommand("GetUserWithRoleDescriptionByEmail", connection);
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(new SqlParameter("@Email", email));
+                    command.Parameters.Add(new SqlParameter("@Password", password));
 
                     var reader = command.ExecuteReader();
                     if (reader.Read())
@@ -227,9 +228,39 @@ namespace Repositorys.Repositorys
         }
 
 
-        public Task<Usuario> Update(Usuario user)
+        public async Task<Usuario> Update(Usuario user)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string cadena = Configuration.GetConnectionString("DataVoxConnection");
+
+                using (SqlConnection connection = new SqlConnection(cadena))
+                {
+                    await connection.OpenAsync();
+
+                    SqlCommand command = new SqlCommand("UpdateUserById", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    // Agregar los parámetros necesarios para el procedimiento almacenado
+                    command.Parameters.AddWithValue("@Id", user.Id);
+                    command.Parameters.AddWithValue("@Password", user.Password);
+                    command.Parameters.AddWithValue("@FechaVencimiento", user.ExpirationDate);
+                    command.Parameters.AddWithValue("@Rol", user.Rol);
+                    command.Parameters.AddWithValue("@Activo", user.Activo);
+
+                    int rowsAffected = await command.ExecuteNonQueryAsync();
+
+                    return  await GetById(user.Id);
+                }
+            }
+            catch (DbUpdateException dbEx)
+            {
+                throw new Exception(dbEx.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

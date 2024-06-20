@@ -64,9 +64,43 @@ namespace Repositorys.Repositorys
         }
 
 
-        public Task<Evento> Create(Evento evento)
+        public async Task<int> Create(Evento evento)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string cadena = Configuration.GetConnectionString("DataVoxConnection");
+                int usuario = 0;
+
+                using (SqlConnection connection = new SqlConnection(cadena))
+                {
+                    await connection.OpenAsync();
+
+                    SqlCommand command = new SqlCommand("InsertEvent", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    // Agregar los parámetros necesarios para el procedimiento almacenado
+                    command.Parameters.AddWithValue("@Descripcion", evento.Descripcion);
+                    command.Parameters.AddWithValue("@Fecha", evento.Fecha);
+                    command.Parameters.AddWithValue("@Cupo", evento.Cupo);
+                    command.Parameters.AddWithValue("@Imagen", evento.Imagen);
+
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
+                    if (await reader.ReadAsync())
+                    {
+                        usuario = reader["EventId"] != DBNull.Value ? Convert.ToInt32(reader["EventId"].ToString()) : 0;
+                    }
+                }
+
+                return usuario;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                throw new Exception(dbEx.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public void Delete(int id)
