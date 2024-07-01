@@ -262,5 +262,49 @@ namespace Repositorys.Repositorys
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<int> ResetPassword(string email, string newPassword)
+        {
+            try
+            {
+                string connectionString = Configuration.GetConnectionString("DataVoxConnection");
+                int result = 0;
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    SqlCommand command = new SqlCommand("ResetPassword", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    // Agregar los parámetros necesarios para el procedimiento almacenado
+                    command.Parameters.AddWithValue("@Email", email);
+                    command.Parameters.AddWithValue("@NewPassword", newPassword);
+
+                    // Parámetro de retorno
+                    SqlParameter returnParameter = new SqlParameter("@ReturnVal", SqlDbType.Int);
+                    returnParameter.Direction = ParameterDirection.ReturnValue;
+                    command.Parameters.Add(returnParameter);
+
+                    // Ejecutar el procedimiento almacenado
+                    await command.ExecuteNonQueryAsync();
+
+                    // Obtener el valor de retorno del procedimiento almacenado
+                    result = (int)returnParameter.Value;
+                }
+
+                return result;
+            }
+            catch (SqlException sqlEx)
+            {
+                throw new Exception("Error al ejecutar el procedimiento almacenado ResetPassword: " + sqlEx.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error en ResetPassword: " + ex.Message);
+            }
+        }
+
+
     }
 }

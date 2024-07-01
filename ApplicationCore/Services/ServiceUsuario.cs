@@ -47,6 +47,12 @@ namespace ApplicationCore.Services
             return await repository.GetById(id);
         }
 
+        public async Task<int> ResetPassword(string email, string newPassword)
+        {
+          
+            return await repository.ResetPassword(email, newPassword);
+        }
+
         public async  Task<Usuario> Update(Usuario user)
         {
             return await repository.Update(user);

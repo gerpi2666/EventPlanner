@@ -16,6 +16,7 @@ namespace ApplicationCore.Services
         Task<Usuario> Update(Usuario user);
         Task<Usuario> GetByEmail(string email, string pass);
         Task<int> Delete(int id);
+        Task<int> ResetPassword(string email, string newPassword);
 
     }
 }

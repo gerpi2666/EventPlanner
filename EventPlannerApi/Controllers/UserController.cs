@@ -2,6 +2,7 @@
 using ApplicationCore.Services;
 using EventPlannerApi.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Repositorys.Models;
 using System.Net;
@@ -198,5 +199,47 @@ namespace EventPlannerApi.Controllers
                 return StatusCode(response.StatusCode, response);
             }
         }
+
+        [HttpPost]
+        [Route("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+        {
+            IServiceUsuario service = new ServiceUsuario(Configuration);
+
+            ResponseModel response = new ResponseModel();
+            try
+            {
+
+                    int result = await service.ResetPassword(request.Email, Cryptography.EncrypthAES(request.NewPassword));
+
+                    if (result == -1)
+                    {
+                        response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        response.Message = "El correo electrónico es incorrecto.";
+                    }
+                    else
+                    {
+                        response.StatusCode = (int)HttpStatusCode.OK;
+                        response.Message = "Contraseña actualizada correctamente.";
+                    }
+                
+
+                    return Ok(response);
+                }
+            
+            catch (Exception e)
+            {
+                response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                response.Message = e.Message;
+
+                return StatusCode(response.StatusCode, response);
+            }
+        }
     }
+
+   
 }
+
+
+
+
