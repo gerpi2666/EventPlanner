@@ -35,15 +35,15 @@ namespace Repositorys.Repositorys
                     SqlCommand command = new SqlCommand("ObtenerEventosDelAnoActual", connection);
                     command.CommandType = CommandType.StoredProcedure;
 
-                     SqlDataReader reader = await command.ExecuteReaderAsync();
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
                     while (await reader.ReadAsync())
                     {
                         Evento evento = new Evento
                         {
                             Id = reader["EventoId"] != DBNull.Value ? Convert.ToInt32(reader["EventoId"].ToString()) : 0,
                             Descripcion = reader["Descripcion"] != DBNull.Value ? reader["Descripcion"].ToString() : "",
-                            Fecha = reader["Fecha"] != DBNull.Value? Convert.ToDateTime(reader["Fecha"]): DateTime.MinValue,
-                            Cupo = reader["Cupo"] != DBNull.Value ? Convert.ToInt32(reader["Cupo"]):0,
+                            Fecha = reader["Fecha"] != DBNull.Value ? Convert.ToDateTime(reader["Fecha"]) : DateTime.MinValue,
+                            Cupo = reader["Cupo"] != DBNull.Value ? Convert.ToInt32(reader["Cupo"]) : 0,
                             Imagen = reader["Imagen"] != DBNull.Value ? reader["Imagen"].ToString() : ""
                         };
 
@@ -117,10 +117,10 @@ namespace Repositorys.Repositorys
         {
             try
             {
-                
+
 
                 List<Evento> eventos = await GetAll();
-              
+
 
                 return eventos;
             }
@@ -138,5 +138,48 @@ namespace Repositorys.Repositorys
         {
             throw new NotImplementedException();
         }
+
+        public async Task<int> InsertEventAsync(string descripcion, DateTime fecha, int cupo, byte[] imagenBytes)
+        {
+            try
+            {
+                string connectionString = Configuration.GetConnectionString("DataVoxConnection");
+                int result = 0;
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    using (SqlCommand command = new SqlCommand("InsertEvent", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        // Utilizar SqlParameter para los parámetros
+                        command.Parameters.Add("@Descripcion", SqlDbType.VarChar).Value = descripcion;
+                        command.Parameters.Add("@Fecha", SqlDbType.DateTime).Value = fecha;
+                        command.Parameters.Add("@Cupo", SqlDbType.Int).Value = cupo;
+                        command.Parameters.Add("@Imagen", SqlDbType.VarBinary, -1).Value = imagenBytes; // -1 para máximo tamaño
+
+                        // Ejecutar el comando y obtener el valor de retorno
+                        var returnValue = await command.ExecuteScalarAsync();
+
+                        // Verificar el resultado devuelto por el procedimiento almacenado
+                        if (returnValue != null && returnValue != DBNull.Value)
+                        {
+                            result = Convert.ToInt32(returnValue);
+                        }
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al insertar el evento", ex);
+            }
+        }
+
+       
     }
+
 }

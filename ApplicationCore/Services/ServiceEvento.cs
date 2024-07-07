@@ -23,6 +23,11 @@ namespace ApplicationCore.Services
             throw new NotImplementedException();
         }
 
+        public async Task<int> CreateEvent(string descripcion, DateTime fecha, int cupo, byte[] imagen)
+        {
+            return await repository.InsertEventAsync(descripcion, fecha, cupo, imagen);
+        }
+
         public void Delete(int id)
         {
             throw new NotImplementedException();

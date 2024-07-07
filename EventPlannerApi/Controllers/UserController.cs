@@ -4,6 +4,7 @@ using EventPlannerApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Diagnostics;
 using Repositorys.Models;
 using System.Net;
 
@@ -235,6 +236,14 @@ namespace EventPlannerApi.Controllers
                 return StatusCode(response.StatusCode, response);
             }
         }
+
+
+
+
+       
+
+
+
     }
 
    

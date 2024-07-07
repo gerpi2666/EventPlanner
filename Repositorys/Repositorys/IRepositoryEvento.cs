@@ -13,6 +13,8 @@ namespace Repositorys.Repositorys
         Task<Evento> GetById(int id);
         Task<int> Create(Evento evento);
         Task<Evento> Uptade(Evento evento);
-        void Delete(int id);    
+        void Delete(int id);
+
+        Task<int> InsertEventAsync(string descripcion, DateTime fecha, int cupo, byte[]  imagen);
     }
 }

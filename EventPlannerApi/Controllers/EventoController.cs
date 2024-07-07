@@ -3,6 +3,7 @@ using EventPlannerApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Diagnostics;
 using Repositorys.Models;
 using System.Net;
 
@@ -51,5 +52,44 @@ namespace EventPlannerApi.Controllers
                 return StatusCode(response.StatusCode, response);
             }
         }
-    }
+
+
+
+        [HttpPost]
+        [Route("create-event")]
+        public async Task<IActionResult> CreateEvent(string descripcion, DateTime fecha, int cupo, byte[] imagen)
+        {
+
+            ResponseModel response = new ResponseModel();
+            IServiceEvento service = new ServiceEvento(Configuration);
+
+            try
+            {
+                int eventId = await service.CreateEvent( descripcion,  fecha, cupo, imagen);
+
+                if (eventId <= 0)
+                {
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    response.Message = "Error al crear el evento.";
+                }
+                else
+                {
+                    response.StatusCode = (int)HttpStatusCode.OK;
+                    response.Message = "Evento creado correctamente.";
+                    response.Data = new { EventId = eventId };
+                }
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                response.Message = ex.Message;
+
+                return StatusCode(response.StatusCode, response);
+            }
+        }
+
+
+    } 
 }

@@ -14,5 +14,6 @@ namespace ApplicationCore.Services
         Task<Evento> Create(Evento evento);
         Task<Evento> Uptade(Evento evento);
         void Delete(int id);
+        Task<int> CreateEvent(string descripcion, DateTime fecha, int cupo, byte[]  imagen);
     }
 }
