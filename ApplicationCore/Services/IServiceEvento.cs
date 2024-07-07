@@ -11,9 +11,9 @@ namespace ApplicationCore.Services
     {
         Task<List<Evento>> GetEventos();
         Task<Evento> GetById(int id);
-        Task<Evento> Create(Evento evento);
+        Task<int> Create(Evento evento);
         Task<Evento> Uptade(Evento evento);
         void Delete(int id);
-        Task<int> CreateEvent(string descripcion, DateTime fecha, int cupo, byte[]  imagen);
+        Task<int> CreateEvent(string descripcion, DateTime fecha, int cupo, string imagen);
     }
 }

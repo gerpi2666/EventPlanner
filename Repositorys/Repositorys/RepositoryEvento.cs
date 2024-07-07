@@ -139,7 +139,7 @@ namespace Repositorys.Repositorys
             throw new NotImplementedException();
         }
 
-        public async Task<int> InsertEventAsync(string descripcion, DateTime fecha, int cupo, byte[] imagenBytes)
+        public async Task<int> InsertEventAsync(string descripcion, DateTime fecha, int cupo, string imagenBytes)
         {
             try
             {
@@ -158,7 +158,7 @@ namespace Repositorys.Repositorys
                         command.Parameters.Add("@Descripcion", SqlDbType.VarChar).Value = descripcion;
                         command.Parameters.Add("@Fecha", SqlDbType.DateTime).Value = fecha;
                         command.Parameters.Add("@Cupo", SqlDbType.Int).Value = cupo;
-                        command.Parameters.Add("@Imagen", SqlDbType.VarBinary, -1).Value = imagenBytes; // -1 para máximo tamaño
+                        command.Parameters.Add("@Imagen", SqlDbType.Text).Value = imagenBytes; // -1 para máximo tamaño
 
                         // Ejecutar el comando y obtener el valor de retorno
                         var returnValue = await command.ExecuteScalarAsync();

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Diagnostics;
 using Repositorys.Models;
 using System.Net;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace EventPlannerApi.Controllers
 {
@@ -57,7 +58,7 @@ namespace EventPlannerApi.Controllers
 
         [HttpPost]
         [Route("create-event")]
-        public async Task<IActionResult> CreateEvent(string descripcion, DateTime fecha, int cupo, byte[] imagen)
+        public async Task<IActionResult> CreateEvent(Evento evento)
         {
 
             ResponseModel response = new ResponseModel();
@@ -65,7 +66,8 @@ namespace EventPlannerApi.Controllers
 
             try
             {
-                int eventId = await service.CreateEvent( descripcion,  fecha, cupo, imagen);
+                //int eventId = await service.CreateEvent( descripcion,  fecha, cupo, imagen);
+                int eventId = await service.Create(evento);
 
                 if (eventId <= 0)
                 {

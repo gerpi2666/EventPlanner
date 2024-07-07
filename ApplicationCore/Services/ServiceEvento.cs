@@ -18,12 +18,12 @@ namespace ApplicationCore.Services
         }
 
 
-        public Task<Evento> Create(Evento evento)
+        public Task<int> Create(Evento evento)
         {
-            throw new NotImplementedException();
+           return repository.Create(evento);
         }
 
-        public async Task<int> CreateEvent(string descripcion, DateTime fecha, int cupo, byte[] imagen)
+        public async Task<int> CreateEvent(string descripcion, DateTime fecha, int cupo,string imagen)
         {
             return await repository.InsertEventAsync(descripcion, fecha, cupo, imagen);
         }
