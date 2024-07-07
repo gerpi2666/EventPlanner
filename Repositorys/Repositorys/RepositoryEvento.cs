@@ -87,7 +87,7 @@ namespace Repositorys.Repositorys
                     SqlDataReader reader = await command.ExecuteReaderAsync();
                     if (await reader.ReadAsync())
                     {
-                        usuario = reader["EventId"] != DBNull.Value ? Convert.ToInt32(reader["EventId"].ToString()) : 0;
+                        usuario = reader["EventoId"] != DBNull.Value ? Convert.ToInt32(reader["EventoId"].ToString()) : 0;
                     }
                 }
 
