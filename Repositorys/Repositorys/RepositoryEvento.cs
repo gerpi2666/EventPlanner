@@ -86,6 +86,8 @@ namespace Repositorys.Repositorys
                     command.Parameters.AddWithValue("@Fecha", evento.Fecha);
                     command.Parameters.AddWithValue("@Cupo", evento.Cupo);
                     command.Parameters.AddWithValue("@Imagen", evento.Imagen);
+                    command.Parameters.AddWithValue("@Name", evento.Name);
+
 
                     SqlDataReader reader = await command.ExecuteReaderAsync();
                     if (await reader.ReadAsync())
@@ -178,9 +180,45 @@ namespace Repositorys.Repositorys
             }
         }
 
-        public Task<Evento> Uptade(Evento evento)
+        public async Task<int> Uptade(Evento evento)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string cadena = Configuration.GetConnectionString("DataVoxConnection");
+                int usuario = 0;
+
+                using (SqlConnection connection = new SqlConnection(cadena))
+                {
+                    await connection.OpenAsync();
+
+                    SqlCommand command = new SqlCommand("ActualizarEvento", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    // Agregar los parámetros necesarios para el procedimiento almacenado
+                    command.Parameters.AddWithValue("@EventoId", evento.Id);
+                    command.Parameters.AddWithValue("@Name", evento.Name);
+                    command.Parameters.AddWithValue("@Descripcion", evento.Descripcion);
+                    command.Parameters.AddWithValue("@Fecha", evento.Fecha);
+                    command.Parameters.AddWithValue("@Cupo", evento.Cupo);
+                    command.Parameters.AddWithValue("@Imagen", evento.Imagen);
+
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
+                    if (await reader.ReadAsync())
+                    {
+                        usuario = reader["ResultCode"] != DBNull.Value ? Convert.ToInt32(reader["ResultCode"].ToString()) : 0;
+                    }
+                }
+
+                return usuario;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                throw new Exception(dbEx.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<int> InsertEventAsync(string descripcion, DateTime fecha, int cupo, string imagenBytes)

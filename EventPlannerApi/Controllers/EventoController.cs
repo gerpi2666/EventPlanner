@@ -54,6 +54,41 @@ namespace EventPlannerApi.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("delete")]
+        public async Task<IActionResult> DeleteEvent(int Id)
+        {
+
+            ResponseModel response = new ResponseModel();
+            IServiceEvento service = new ServiceEvento(Configuration);
+
+            try
+            {
+                //int eventId = await service.CreateEvent( descripcion,  fecha, cupo, imagen);
+                int eventId = await service.Delete(Id);
+
+                if (eventId <= 0)
+                {
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    response.Message = "Error al crear el evento.";
+                }
+                else
+                {
+                    response.StatusCode = (int)HttpStatusCode.OK;
+                    response.Message = "Evento creado correctamente.";
+                    response.Data = new { EventId = eventId };
+                }
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                response.Message = ex.Message;
+
+                return StatusCode(response.StatusCode, response);
+            }
+        }
 
 
         [HttpPost]
@@ -61,7 +96,7 @@ namespace EventPlannerApi.Controllers
         public async Task<IActionResult> CreateEvent(Evento evento)
         {
 
-            ResponseModel response = new ResponseModel();
+                ResponseModel response = new ResponseModel();
             IServiceEvento service = new ServiceEvento(Configuration);
 
             try

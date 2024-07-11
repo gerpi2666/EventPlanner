@@ -44,9 +44,9 @@ namespace ApplicationCore.Services
            return await repository.GetEventos();
         }
 
-        public Task<Evento> Uptade(Evento evento)
+        public async Task<int> Uptade(Evento evento)
         {
-            throw new NotImplementedException();
+           return await repository.Uptade(evento);
         }
     }
 }
