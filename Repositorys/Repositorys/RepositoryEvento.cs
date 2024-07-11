@@ -41,13 +41,16 @@ namespace Repositorys.Repositorys
                         Evento evento = new Evento
                         {
                             Id = reader["EventoId"] != DBNull.Value ? Convert.ToInt32(reader["EventoId"].ToString()) : 0,
+                            Name = reader["Name"] != DBNull.Value ? reader["Name"].ToString() : "",
                             Descripcion = reader["Descripcion"] != DBNull.Value ? reader["Descripcion"].ToString() : "",
                             Fecha = reader["Fecha"] != DBNull.Value ? Convert.ToDateTime(reader["Fecha"]) : DateTime.MinValue,
                             Cupo = reader["Cupo"] != DBNull.Value ? Convert.ToInt32(reader["Cupo"]) : 0,
-                            Imagen = reader["Imagen"] != DBNull.Value ? reader["Imagen"].ToString() : ""
+                            Imagen = reader["Imagen"] != DBNull.Value ? reader["Imagen"].ToString() : "",
+                            Activo= Convert.ToBoolean(reader["Activo"].ToString()) 
                         };
 
                         eventos.Add(evento);
+
                     }
                 }
 
@@ -103,26 +106,67 @@ namespace Repositorys.Repositorys
             }
         }
 
-        public void Delete(int id)
+        public async Task<int> Delete(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string cadena = Configuration.GetConnectionString("DataVoxConnection");
+                int usuario = 0;
+
+                using (SqlConnection connection = new SqlConnection(cadena))
+                {
+                    await connection.OpenAsync();
+
+                    SqlCommand command = new SqlCommand("DeleteEvent", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    // Agregar los parámetros necesarios para el procedimiento almacenado
+                    
+                    command.Parameters.AddWithValue("@Id", id);
+
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
+                    if (await reader.ReadAsync())
+                    {
+                        usuario = reader["EventId"] != DBNull.Value ? Convert.ToInt32(reader["EventId"].ToString()) : 0;
+                    }
+                }
+
+                return usuario;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                throw new Exception(dbEx.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
-        public Task<Evento> GetById(int id)
+        public async Task<Evento> GetById(int id)
         {
             throw new NotImplementedException();
+
         }
 
-        public async Task<List<Evento>> GetEventos()
+        public async Task<List<Eventformating>> GetEventos()
         {
             try
             {
 
-
                 List<Evento> eventos = await GetAll();
 
+                // Agrupar eventos por Activo
+                var eventosAgrupados = eventos
+                    .GroupBy(e => e.Activo)
+                    .Select(g => new Eventformating
+                    {
+                        Activo = g.Key,
+                        Eventos = g.OrderByDescending(e => e.Fecha).ToList()
+                    })
+                    .ToList();
 
-                return eventos;
+                return eventosAgrupados;
             }
             catch (DbUpdateException dbEx)
             {

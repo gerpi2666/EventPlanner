@@ -29,7 +29,7 @@ namespace EventPlannerApi.Controllers
             {
                 IServiceEvento service = new ServiceEvento(Configuration);
 
-                List<Evento> events = await service.GetEventos();
+                List<Eventformating> events = await service.GetEventos();
 
                 if (events == null && events.Count > 0)
                 {

@@ -15,5 +15,6 @@ namespace Repositorys.Models
         public int Rol { get; set; }
         public bool Activo { get; set; }
         public string RolDescripcion { get; set; }
+        public string NombreUsuario { get; set; }
     }
 }

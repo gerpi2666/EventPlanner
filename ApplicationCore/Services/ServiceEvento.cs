@@ -28,9 +28,10 @@ namespace ApplicationCore.Services
             return await repository.InsertEventAsync(descripcion, fecha, cupo, imagen);
         }
 
-        public void Delete(int id)
+        public async Task<int> Delete(int id)
+
         {
-            throw new NotImplementedException();
+            return await repository.Delete(id);
         }
 
         public Task<Evento> GetById(int id)
@@ -38,7 +39,7 @@ namespace ApplicationCore.Services
             throw new NotImplementedException();
         }
 
-        public async Task<List<Evento>> GetEventos()
+        public async Task<List<Eventformating>> GetEventos()
         {
            return await repository.GetEventos();
         }

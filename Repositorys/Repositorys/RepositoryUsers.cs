@@ -40,8 +40,9 @@ namespace Repositorys.Repositorys
                     command.Parameters.AddWithValue("@Email", user.Email);
                     command.Parameters.AddWithValue("@FechaVencimiento",user.ExpirationDate);
                     command.Parameters.AddWithValue("@Rol",user.Rol);
-
-                    SqlDataReader reader = await command.ExecuteReaderAsync();
+                    command.Parameters.AddWithValue("@NombreUsuario", user.NombreUsuario);
+                    
+                                        SqlDataReader reader = await command.ExecuteReaderAsync();
                     if (await reader.ReadAsync())
                     {
                         usuario = reader["UserId"] != DBNull.Value ? Convert.ToInt32(reader["UserId"].ToString()) : 0;
@@ -168,6 +169,7 @@ namespace Repositorys.Repositorys
                         usuario.ExpirationDate = reader["FechaVencimiento"] != DBNull.Value ? Convert.ToDateTime(reader["FechaVencimiento"].ToString()) : DateTime.MinValue;
                         usuario.Rol = reader["Rol"] != DBNull.Value ? Convert.ToInt32(reader["Rol"].ToString()) : 0;
                         usuario.RolDescripcion = reader["DescripcionRol"] != DBNull.Value ? reader["DescripcionRol"].ToString() : "";
+                        usuario.NombreUsuario= reader["NombreUsuario"] != DBNull.Value ? reader["NombreUsuario"].ToString() : "";
                     }
                 }
 

@@ -156,6 +156,39 @@ namespace EventPlannerApi.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("delete")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            ResponseModel response = new ResponseModel();
+            try
+            {
+                IServiceUsuario service = new ServiceUsuario(Configuration);
+
+                int user1 = await service.Delete(id);
+
+                if (user1 == 0)
+                {
+                    response.StatusCode = (int)HttpStatusCode.NotFound;
+                    response.Message = "Usuario no encontrados";
+                }
+                else
+                {
+                    response.StatusCode = (int)HttpStatusCode.OK;
+                    response.Message = "Reporte encontrado";
+                    response.Data = user1;
+                }
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                response.Message = e.Message;
+
+                return StatusCode(response.StatusCode, response);
+            }
+        }
 
         [HttpPost]
         [Route("login")]

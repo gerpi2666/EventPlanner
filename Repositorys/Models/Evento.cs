@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Repositorys.Models
@@ -9,9 +10,11 @@ namespace Repositorys.Models
     public class Evento
     {
         public int  Id { get; set; }
+        public string Name { get; set; }
         public string Descripcion { get; set; }
         public DateTime Fecha { get; set; }
         public int Cupo  { get; set; }
         public string Imagen { get; set; }
+        public bool Activo { get; set; }
     }
 }
