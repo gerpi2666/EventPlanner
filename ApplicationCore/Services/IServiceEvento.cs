@@ -12,7 +12,7 @@ namespace ApplicationCore.Services
         Task<List<Eventformating>> GetEventos();
         Task<Evento> GetById(int id);
         Task<int> Create(Evento evento);
-        Task<Evento> Uptade(Evento evento);
+        Task<int> Uptade(Evento evento);
         Task<int> Delete(int id);
         Task<int> CreateEvent(string descripcion, DateTime fecha, int cupo, string imagen);
     }

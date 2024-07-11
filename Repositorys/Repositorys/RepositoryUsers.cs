@@ -240,7 +240,7 @@ namespace Repositorys.Repositorys
                 {
                     await connection.OpenAsync();
 
-                    SqlCommand command = new SqlCommand("UpdateUserById", connection);
+                    SqlCommand command = new SqlCommand("UpdateUser", connection);
                     command.CommandType = CommandType.StoredProcedure;
 
                     // Agregar los parámetros necesarios para el procedimiento almacenado
@@ -248,7 +248,7 @@ namespace Repositorys.Repositorys
                     command.Parameters.AddWithValue("@Password", user.Password);
                     command.Parameters.AddWithValue("@FechaVencimiento", user.ExpirationDate);
                     command.Parameters.AddWithValue("@Rol", user.Rol);
-                    command.Parameters.AddWithValue("@Activo", user.Activo);
+                    command.Parameters.AddWithValue("@NombreUsuario", user.NombreUsuario);
 
                     int rowsAffected = await command.ExecuteNonQueryAsync();
 
