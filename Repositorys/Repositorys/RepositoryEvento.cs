@@ -147,7 +147,43 @@ namespace Repositorys.Repositorys
 
         public async Task<Evento> GetById(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Evento usuario = null;
+                string cadena = Configuration.GetConnectionString("DataVoxConnection");
+
+                using (SqlConnection connection = new SqlConnection(cadena))
+                {
+                    connection.Open();
+
+                    var command = new SqlCommand("GetEventoById", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@EventoId", id));
+
+                    var reader = command.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        usuario = new Evento();
+                        usuario.Name = reader["Name"] != DBNull.Value ? reader["Name"].ToString() : "";
+                        usuario.Descripcion = reader["Descripcion"] != DBNull.Value ? reader["Descripcion"].ToString() : "";
+                        usuario.Id = reader["EventoId"] != DBNull.Value ? Convert.ToInt32(reader["EventoId"].ToString()) : 0;
+                        usuario.Imagen = reader["Imagen"] != DBNull.Value ? reader["Imagen"].ToString() : "";
+                        usuario.Fecha = reader["Fecha"] != DBNull.Value ? Convert.ToDateTime(reader["Fecha"].ToString()) : DateTime.MinValue;
+                        usuario.Cupo = reader["Cupo"] != DBNull.Value ? Convert.ToInt32(reader["Cupo"].ToString()) :0;
+                    }
+                }
+
+                return usuario;
+
+            }
+            catch (DbUpdateException dbEx)
+            {
+                throw new Exception(dbEx.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
 
         }
 

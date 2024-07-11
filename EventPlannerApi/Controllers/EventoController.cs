@@ -90,6 +90,77 @@ namespace EventPlannerApi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("getById")]
+        public async Task<IActionResult> GetById(int Id)
+        {
+
+            ResponseModel response = new ResponseModel();
+            IServiceEvento service = new ServiceEvento(Configuration);
+
+            try
+            {
+                //int eventId = await service.CreateEvent( descripcion,  fecha, cupo, imagen);
+                Evento eventId = await service.GetById(Id);
+
+                if (eventId == null)
+                {
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    response.Message = "Error al crear el evento.";
+                }
+                else
+                {
+                    response.StatusCode = (int)HttpStatusCode.OK;
+                    response.Message = "Evento creado correctamente.";
+                    response.Data = eventId;
+                }
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                response.Message = ex.Message;
+
+                return StatusCode(response.StatusCode, response);
+            }
+        }
+
+        [HttpPost]
+        [Route("update")]
+        public async Task<IActionResult> UpdateEvent(Evento evento)
+        {
+
+            ResponseModel response = new ResponseModel();
+            IServiceEvento service = new ServiceEvento(Configuration);
+
+            try
+            {
+                //int eventId = await service.CreateEvent( descripcion,  fecha, cupo, imagen);
+                int eventId = await service.Uptade(evento);
+
+                if (eventId == 0)
+                {
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    response.Message = "Error al crear el evento.";
+                }
+                else
+                {
+                    response.StatusCode = (int)HttpStatusCode.OK;
+                    response.Message = "Evento creado correctamente.";
+                    response.Data = new { EventId = eventId };
+                }
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                response.Message = ex.Message;
+
+                return StatusCode(response.StatusCode, response);
+            }
+        }
 
         [HttpPost]
         [Route("create-event")]

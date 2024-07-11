@@ -34,9 +34,9 @@ namespace ApplicationCore.Services
             return await repository.Delete(id);
         }
 
-        public Task<Evento> GetById(int id)
+        public async Task<Evento> GetById(int id)
         {
-            throw new NotImplementedException();
+           return await repository.GetById(id);
         }
 
         public async Task<List<Eventformating>> GetEventos()
