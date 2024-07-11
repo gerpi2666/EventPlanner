@@ -126,7 +126,7 @@ namespace Repositorys.Repositorys
                         usuario.ExpirationDate = reader["FechaVencimiento"] != DBNull.Value ? Convert.ToDateTime(reader["FechaVencimiento"].ToString()) : DateTime.MinValue;
                         usuario.Rol = reader["Rol"] != DBNull.Value ? Convert.ToInt32(reader["Rol"].ToString()) : 0;
                         usuario.RolDescripcion = reader["DescripcionRol"] != DBNull.Value ? reader["DescripcionRol"].ToString() : "";
-
+                        usuario.NombreUsuario= reader["NombreUsuario"] != DBNull.Value ? reader["NombreUsuario"].ToString() : "";
                         users.Add(usuario);
                     }
                 }
