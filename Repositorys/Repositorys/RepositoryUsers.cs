@@ -252,7 +252,7 @@ namespace Repositorys.Repositorys
 
                     int rowsAffected = await command.ExecuteNonQueryAsync();
 
-                    return  await GetById(user.Id);
+                    return  await GetById((int)user.Id);
                 }
             }
             catch (DbUpdateException dbEx)
