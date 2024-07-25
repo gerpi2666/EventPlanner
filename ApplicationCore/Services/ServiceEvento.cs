@@ -39,6 +39,11 @@ namespace ApplicationCore.Services
            return await repository.GetById(id);
         }
 
+        public async Task<String> RegisterUserToEventAsync(int userId, int eventId)
+        {
+            return await repository.RegisterUserToEventAsync( userId, eventId);
+        }
+
         public async Task<List<Eventformating>> GetEventos()
         {
            return await repository.GetEventos();

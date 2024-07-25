@@ -15,5 +15,6 @@ namespace ApplicationCore.Services
         Task<int> Uptade(Evento evento);
         Task<int> Delete(int id);
         Task<int> CreateEvent(string descripcion, DateTime fecha, int cupo, string imagen);
+        Task<String> RegisterUserToEventAsync(int userId, int eventId);
     }
 }

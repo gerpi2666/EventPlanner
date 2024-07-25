@@ -297,7 +297,42 @@ namespace Repositorys.Repositorys
             }
         }
 
-       
-    }
+        public async Task<string> RegisterUserToEventAsync(int userId, int eventId)
+        {
+            string _connectionString = Configuration.GetConnectionString("DataVoxConnection");
+         
+            int result = -1; // Valor por defecto para indicar que no se ha realizado la operación
 
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    using (SqlCommand command = new SqlCommand("RegistrarUsuarioEnEvento", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@UsuarioId", userId);
+                        command.Parameters.AddWithValue("@EventoId", eventId);
+
+                        await connection.OpenAsync();
+                        await command.ExecuteNonQueryAsync();
+
+                        return "Registrado en el evento con éxito";
+                    }
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                // Manejar errores relacionados con SQL, como problemas de conexión o errores de SQL
+                return $"Error de SQL: {sqlEx.Message}";
+            }
+            catch (Exception ex)
+            {
+                // Manejar otros errores generales
+                return $"Error: {ex.Message}";
+            }
+        }
+    }
 }
+
+
+

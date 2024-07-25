@@ -14,7 +14,7 @@ namespace Repositorys.Repositorys
         Task<int> Create(Evento evento);
         Task<int> Uptade(Evento evento);
         Task<int> Delete(int id);
-
         Task<int> InsertEventAsync(string descripcion, DateTime fecha, int cupo, string  imagen);
+        Task<String> RegisterUserToEventAsync(int userId, int eventId);
     }
 }

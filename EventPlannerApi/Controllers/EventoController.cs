@@ -163,6 +163,50 @@ namespace EventPlannerApi.Controllers
         }
 
         [HttpPost]
+        [Route("register-user")]
+        public async Task<IActionResult> RegisterUserToEvent(int userId, int eventId)
+        {
+            ResponseModel response = new ResponseModel();
+            IServiceEvento service = new ServiceEvento(Configuration);
+
+            try
+            {
+                string message = await service.RegisterUserToEventAsync(userId, eventId);
+
+                if (message.Contains("con éxito"))
+                {
+                    response.StatusCode = (int)HttpStatusCode.OK;
+                    response.Message = message;
+                }
+                else if (message.Contains("Error"))
+                {
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    response.Message = message;
+                }
+                else if (message.Contains("No hay cupos disponibles"))
+                {
+                    response.StatusCode = (int)HttpStatusCode.Conflict; // Conflict puede ser adecuado aquí
+                    response.Message = message;
+                }
+                else
+                {
+                    response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    response.Message = "Resultado desconocido";
+                }
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                response.Message = ex.Message;
+
+                return StatusCode(response.StatusCode, response);
+            }
+        }
+
+
+        [HttpPost]
         [Route("create-event")]
         public async Task<IActionResult> CreateEvent(Evento evento)
         {
