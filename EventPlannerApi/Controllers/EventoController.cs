@@ -277,5 +277,30 @@ namespace EventPlannerApi.Controllers
         }
 
 
+        [HttpPost("unsubscribe")]
+        public async Task<IActionResult> UnsubscribeFromEvent( int userId, int eventId)
+        {
+            
+            ResponseModel response = new ResponseModel();
+            IServiceEvento service = new ServiceEvento(Configuration);
+            try
+            {
+                var result = await service.UnsubscribeFromEvent(userId, eventId);
+                if (result!=0)
+                {
+                    return Ok(new { Message = "Desuscripción exitosa" });
+                }
+                else
+                {
+                    return BadRequest(new { Message = "No se pudo desuscribir del evento" });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Manejar excepciones, registrar el error, etc.
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
+            }
+        }
+
     }
 }
