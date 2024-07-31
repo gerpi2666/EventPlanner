@@ -211,7 +211,7 @@ namespace EventPlannerApi.Controllers
         public async Task<IActionResult> CreateEvent(Evento evento)
         {
 
-                ResponseModel response = new ResponseModel();
+            ResponseModel response = new ResponseModel();
             IServiceEvento service = new ServiceEvento(Configuration);
 
             try
@@ -242,6 +242,40 @@ namespace EventPlannerApi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get-events-by-user")]
+        public async Task<IActionResult> GetEventByUser(int usertId)
+        {
+            ResponseModel response = new ResponseModel();
+            IServiceEvento service = new ServiceEvento(Configuration);
 
-    } 
+            try
+            {
+                var events = await service.GetEventsByUserAsync(usertId);
+
+                if (events == null || events.Count == 0)
+                {
+                    response.StatusCode = (int)HttpStatusCode.NotFound;
+                    response.Message = "No se encontraron eventos para este usuario.";
+                }
+                else
+                {
+                    response.StatusCode = (int)HttpStatusCode.OK;
+                    response.Message = "Eventos encontrados.";
+                    response.Data = events;
+                }
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                response.Message = ex.Message;
+
+                return StatusCode(response.StatusCode, response);
+            }
+        }
+
+
+    }
 }

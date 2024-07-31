@@ -53,5 +53,10 @@ namespace ApplicationCore.Services
         {
            return await repository.Uptade(evento);
         }
+
+        public async Task<List<Evento>> GetEventsByUserAsync(int userId)
+        {
+            return await repository.GetEventsByUserAsync(userId);
+        }
     }
 }

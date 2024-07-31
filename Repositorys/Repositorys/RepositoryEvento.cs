@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using System.Data;
 using System.Data.Entity.Infrastructure;
 using System.Xml;
+using System.Data.Entity;
 
 
 namespace Repositorys.Repositorys
@@ -331,6 +332,64 @@ namespace Repositorys.Repositorys
                 return $"Error: {ex.Message}";
             }
         }
+
+
+        public async Task<List<Evento>> GetEventsByUserAsync(int userId)
+        {
+            string _connectionString = Configuration.GetConnectionString("DataVoxConnection");
+            var eventos = new List<Evento>();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    using (SqlCommand command = new SqlCommand("ObtenerEventosPorUsuario", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@UsuarioId", userId);
+
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                var evento = new Evento
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("EventoId")),
+                                    Name = reader.GetString(reader.GetOrdinal("Name")),
+                                    Descripcion = reader.GetString(reader.GetOrdinal("Descripcion")),
+                                    Fecha = reader.GetDateTime(reader.GetOrdinal("Fecha")),
+                                    Cupo = reader.GetInt32(reader.GetOrdinal("Cupo")),
+                                    Imagen = reader["Imagen"] != DBNull.Value ? reader["Imagen"].ToString() : "",
+                                    Activo = reader.GetBoolean(reader.GetOrdinal("Activo"))
+                                };
+
+                                eventos.Add(evento);
+                            }
+                        }
+                    }
+                }
+
+                return eventos;
+            }
+            catch (SqlException sqlEx)
+            {
+                // Manejar errores relacionados con SQL, como problemas de conexión o errores de SQL
+                throw new Exception($"Error de SQL: {sqlEx.Message}", sqlEx);
+            }
+            catch (Exception ex)
+            {
+                // Manejar otros errores generales
+                throw new Exception($"Error: {ex.Message}", ex);
+            }
+        }
+
+
+
+
+
+
+
     }
 }
 
