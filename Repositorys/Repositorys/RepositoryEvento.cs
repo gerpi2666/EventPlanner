@@ -47,7 +47,7 @@ namespace Repositorys.Repositorys
                             Fecha = reader["Fecha"] != DBNull.Value ? Convert.ToDateTime(reader["Fecha"]) : DateTime.MinValue,
                             Cupo = reader["Cupo"] != DBNull.Value ? Convert.ToInt32(reader["Cupo"]) : 0,
                             Imagen = reader["Imagen"] != DBNull.Value ? reader["Imagen"].ToString() : "",
-                            Activo= Convert.ToBoolean(reader["Activo"].ToString()) 
+                            Activo = Convert.ToBoolean(reader["Activo"].ToString())
                         };
 
                         eventos.Add(evento);
@@ -124,7 +124,7 @@ namespace Repositorys.Repositorys
                     command.CommandType = CommandType.StoredProcedure;
 
                     // Agregar los parámetros necesarios para el procedimiento almacenado
-                    
+
                     command.Parameters.AddWithValue("@Id", id);
 
                     SqlDataReader reader = await command.ExecuteReaderAsync();
@@ -170,7 +170,7 @@ namespace Repositorys.Repositorys
                         usuario.Id = reader["EventoId"] != DBNull.Value ? Convert.ToInt32(reader["EventoId"].ToString()) : 0;
                         usuario.Imagen = reader["Imagen"] != DBNull.Value ? reader["Imagen"].ToString() : "";
                         usuario.Fecha = reader["Fecha"] != DBNull.Value ? Convert.ToDateTime(reader["Fecha"].ToString()) : DateTime.MinValue;
-                        usuario.Cupo = reader["Cupo"] != DBNull.Value ? Convert.ToInt32(reader["Cupo"].ToString()) :0;
+                        usuario.Cupo = reader["Cupo"] != DBNull.Value ? Convert.ToInt32(reader["Cupo"].ToString()) : 0;
                     }
                 }
 
@@ -301,7 +301,7 @@ namespace Repositorys.Repositorys
         public async Task<string> RegisterUserToEventAsync(int userId, int eventId)
         {
             string _connectionString = Configuration.GetConnectionString("DataVoxConnection");
-         
+
             int result = -1; // Valor por defecto para indicar que no se ha realizado la operación
 
             try
@@ -385,8 +385,43 @@ namespace Repositorys.Repositorys
         }
 
 
+        public async Task<int> UnsubscribeFromEvent(int userId, int eventId)
+        {
+            try
+            {
+                string connectionString = Configuration.GetConnectionString("DataVoxConnection");
+                int affectedRows = 0;
 
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
 
+                    using (SqlCommand command = new SqlCommand("UnsubscribeUserFromEvent", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        // Agregar los parámetros necesarios para el procedimiento almacenado
+                        command.Parameters.AddWithValue("@UserId", userId);
+                        command.Parameters.AddWithValue("@EventId", eventId);
+
+                        // Ejecutar el procedimiento almacenado
+                        affectedRows = (int)await command.ExecuteScalarAsync(); // Afecta las filas eliminadas
+                    }
+                }
+
+                return affectedRows;
+            }
+            catch (SqlException sqlEx)
+            {
+                // Manejo de excepciones específicas de SQL
+                throw new Exception($"Error de SQL: {sqlEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Manejo de excepciones generales
+                throw new Exception($"Error: {ex.Message}");
+            }
+        }
 
 
 

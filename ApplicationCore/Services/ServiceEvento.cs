@@ -58,5 +58,11 @@ namespace ApplicationCore.Services
         {
             return await repository.GetEventsByUserAsync(userId);
         }
+
+        public async Task<int> UnsubscribeFromEvent(int userId, int eventId)
+        {
+            return await repository.UnsubscribeFromEvent(userId, eventId);
+        }
+
     }
 }
