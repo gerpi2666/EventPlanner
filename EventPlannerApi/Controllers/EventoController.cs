@@ -1,10 +1,13 @@
 ﻿using ApplicationCore.Services;
+using ApplicationCore.Utils;
 using EventPlannerApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Diagnostics;
+using Microsoft.Extensions.Options;
 using Repositorys.Models;
+using System.Configuration;
 using System.Net;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -15,9 +18,12 @@ namespace EventPlannerApi.Controllers
     public class EventoController : ControllerBase
     {
         private readonly IConfiguration Configuration;
-        public EventoController(IConfiguration configuration)
+        private readonly EmailSetting EmailConfiguration;
+
+        public EventoController(IConfiguration configuration,IOptions<EmailSetting> Emn)
         {
             Configuration = configuration;
+            EmailConfiguration = Emn.Value;
         }
 
         [HttpGet]
@@ -168,7 +174,7 @@ namespace EventPlannerApi.Controllers
         {
             ResponseModel response = new ResponseModel();
             IServiceEvento service = new ServiceEvento(Configuration);
-
+            IServiceEmail serviceEmail = new ServiceEmail(EmailConfiguration);
             try
             {
                 string message = await service.RegisterUserToEventAsync(userId, eventId);
@@ -177,6 +183,8 @@ namespace EventPlannerApi.Controllers
                 {
                     response.StatusCode = (int)HttpStatusCode.OK;
                     response.Message = message;
+                    serviceEmail.SendEmail("Prueba", "PRUEBA MICHI PRUEBA", "laurnortiz05@gmail.com");
+
                 }
                 else if (message.Contains("Error"))
                 {
@@ -185,7 +193,7 @@ namespace EventPlannerApi.Controllers
                 }
                 else if (message.Contains("No hay cupos disponibles"))
                 {
-                    response.StatusCode = (int)HttpStatusCode.Conflict; // Conflict puede ser adecuado aquí
+                    response.StatusCode = (int)HttpStatusCode.Conflict; 
                     response.Message = message;
                 }
                 else

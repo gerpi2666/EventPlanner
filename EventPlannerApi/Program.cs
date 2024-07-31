@@ -1,3 +1,6 @@
+using ApplicationCore.Services;
+using ApplicationCore.Utils;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -17,6 +20,10 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader();
     });
 });
+
+//builder.Services.AddTransient<IServiceEmail, ServiceEmail>();
+//builder.Services.Configure<EmailSetting>(builder.Configuration.GetSection("GmailSettings"));
+
 
 
 var app = builder.Build();
