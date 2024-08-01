@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Repositorys.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,8 @@ namespace ApplicationCore.Services
 {
     public interface IServiceEmail
     {
-        void SendEmail(string subject,string body, string to);
+        void SendEmailRegisterEvent(EventeInfoEmail evento, string to);
+        void SendEmailCreateEvent(EventeInfoEmail evento, string to);
+
     }
 }

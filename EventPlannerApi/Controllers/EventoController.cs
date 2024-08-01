@@ -175,15 +175,25 @@ namespace EventPlannerApi.Controllers
             ResponseModel response = new ResponseModel();
             IServiceEvento service = new ServiceEvento(Configuration);
             IServiceEmail serviceEmail = new ServiceEmail(EmailConfiguration);
+            IServiceUsuario serviceUsuario = new ServiceUsuario(Configuration);
             try
             {
                 string message = await service.RegisterUserToEventAsync(userId, eventId);
+                var evento = await service.GetById(eventId);
+                var emailTosend = serviceUsuario.GetById(userId);
 
                 if (message.Contains("con éxito"))
                 {
                     response.StatusCode = (int)HttpStatusCode.OK;
                     response.Message = message;
-                    serviceEmail.SendEmail("Prueba", "PRUEBA MICHI PRUEBA", "laurnortiz05@gmail.com");
+                    serviceEmail.SendEmailRegisterEvent(
+                        new EventeInfoEmail 
+                        { 
+                            Nombre = evento.Name, 
+                            Descripcion = evento.Descripcion, 
+                            Fecha = evento.Fecha.ToString() 
+                        }
+                        , "gerpi.2666@gmail.com");
 
                 }
                 else if (message.Contains("Error"))
@@ -221,6 +231,7 @@ namespace EventPlannerApi.Controllers
 
             ResponseModel response = new ResponseModel();
             IServiceEvento service = new ServiceEvento(Configuration);
+            IServiceEmail serviceEmail = new ServiceEmail(EmailConfiguration);
 
             try
             {
@@ -237,6 +248,16 @@ namespace EventPlannerApi.Controllers
                     response.StatusCode = (int)HttpStatusCode.OK;
                     response.Message = "Evento creado correctamente.";
                     response.Data = new { EventId = eventId };
+                    var evento1 =  await service.GetById(eventId);
+                    serviceEmail.SendEmailCreateEvent(
+                        new EventeInfoEmail
+                        {
+                            Nombre = evento.Name,
+                            Descripcion = evento.Descripcion,
+                            Fecha = evento.Fecha.ToString()
+                        }
+                        , "laurnortiz05@gmail.com");
+
                 }
 
                 return Ok(response);
