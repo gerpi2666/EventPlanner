@@ -213,6 +213,7 @@ namespace Repositorys.Repositorys
                         usuario.Rol = reader["Rol"] != DBNull.Value ? Convert.ToInt32(reader["Rol"].ToString()) : 0;
                         usuario.RolDescripcion = reader["DescripcionRol"] != DBNull.Value ? reader["DescripcionRol"].ToString() : "";
                         usuario.Activo = reader["Activo"] != DBNull.Value ? Convert.ToBoolean(reader["Activo"].ToString()) : false;
+                        usuario.NombreUsuario = reader["NombreUsuario"] != DBNull.Value ? reader["NombreUsuario"].ToString() : "";
                     }
                 }
 
