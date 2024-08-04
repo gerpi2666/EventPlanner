@@ -64,5 +64,9 @@ namespace ApplicationCore.Services
             return await repository.UnsubscribeFromEvent(userId, eventId);
         }
 
+        public async Task<AttendanceStatistics> GetAttendanceStatistics()
+        {
+            return await repository.GetAttendanceStatistics();
+        }
     }
 }

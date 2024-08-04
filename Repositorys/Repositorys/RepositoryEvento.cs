@@ -424,9 +424,52 @@ namespace Repositorys.Repositorys
         }
 
 
+        public async Task<AttendanceStatistics> GetAttendanceStatistics()
+        {
+            try
+            {
+                string cadena = Configuration.GetConnectionString("DataVoxConnection");
 
+                using (SqlConnection connection = new SqlConnection(cadena))
+                {
+                    await connection.OpenAsync();
+
+                    SqlCommand command = new SqlCommand(@"
+                        SELECT 
+                            SUM(CASE WHEN Confirm = 1 THEN 1 ELSE 0 END) AS TotalAttendance, 
+                            COUNT(*) AS TotalRegistrations,
+                            AVG(CASE WHEN Confirm = 1 THEN 1 ELSE 0 END) * 100.0 AS AverageAttendancePercentage
+                        FROM 
+                            UserEvents", connection);
+
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
+                    if (await reader.ReadAsync())
+                    {
+                        var totalAttendance = reader["TotalAttendance"] != DBNull.Value ? Convert.ToInt32(reader["TotalAttendance"]) : 0;
+                        var totalRegistrations = reader["TotalRegistrations"] != DBNull.Value ? Convert.ToInt32(reader["TotalRegistrations"]) : 0;
+                        var averageAttendancePercentage = reader["AverageAttendancePercentage"] != DBNull.Value ? Convert.ToDouble(reader["AverageAttendancePercentage"]) : 0.0;
+
+                        return new AttendanceStatistics
+                        {
+                            TotalAttendance = totalAttendance,
+                            TotalRegistrations = totalRegistrations,
+                            AverageAttendancePercentage = averageAttendancePercentage
+                        };
+                    }
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener las estadísticas de asistencia", ex);
+            }
+        }
     }
 }
+
+
+
 
 
 

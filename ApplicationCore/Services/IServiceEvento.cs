@@ -18,5 +18,7 @@ namespace ApplicationCore.Services
         Task<String> RegisterUserToEventAsync(int userId, int eventId);
         Task<List<Evento>> GetEventsByUserAsync(int userId);
         Task<int> UnsubscribeFromEvent(int userId, int eventId);
+
+        Task<AttendanceStatistics> GetAttendanceStatistics();
     }
 }

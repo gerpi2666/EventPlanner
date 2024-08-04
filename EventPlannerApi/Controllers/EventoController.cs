@@ -331,5 +331,44 @@ namespace EventPlannerApi.Controllers
             }
         }
 
+
+        [HttpGet]
+        [Route("GetEventAttendanceStatistics")]
+        public async Task<IActionResult> GetAttendanceStatistics()
+        {
+            ResponseModel response = new ResponseModel();
+            IServiceEvento service = new ServiceEvento(Configuration);
+
+            try
+            {
+                var statistics = await service.GetAttendanceStatistics();
+
+                if (statistics != null)
+                {
+                    response.StatusCode = (int)HttpStatusCode.OK;
+                    response.Message = "Asistencia calculada correctamente.";
+                    response.Data = statistics;
+                }
+                else
+                {
+                    response.StatusCode = (int)HttpStatusCode.NotFound;
+                    response.Message = "No se encontraron datos de asistencia.";
+                }
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                response.Message = ex.Message;
+
+                return StatusCode(response.StatusCode, response);
+            }
+        }
+
+
+
+
+
     }
 }
