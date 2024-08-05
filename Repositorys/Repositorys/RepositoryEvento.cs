@@ -424,7 +424,7 @@ namespace Repositorys.Repositorys
         }
 
 
-        public async Task<AttendanceStatistics> GetAttendanceStatistics()
+        public async Task<List<AttendanceStatistics>> GetAttendanceStatistics()
         {
             try
             {
@@ -435,38 +435,70 @@ namespace Repositorys.Repositorys
                     await connection.OpenAsync();
 
                     SqlCommand command = new SqlCommand(@"
-                        SELECT 
-                            SUM(CASE WHEN Confirm = 1 THEN 1 ELSE 0 END) AS TotalAttendance, 
-                            COUNT(*) AS TotalRegistrations,
-                            AVG(CASE WHEN Confirm = 1 THEN 1 ELSE 0 END) * 100.0 AS AverageAttendancePercentage
-                        FROM 
-                            UserEvents", connection);
+ -- Calcular el total de usuarios
+DECLARE @TotalUsers INT;
+SELECT @TotalUsers = COUNT(*) FROM Users;
+
+-- Consulta principal para obtener las estadísticas de asistencia por evento
+SELECT
+    e.Name AS EventName,
+    ISNULL(SUM(CASE WHEN ue.Confirm = 1 THEN 1 ELSE 0 END), 0) AS TotalAttendance,
+    CASE 
+        WHEN @TotalUsers = 0 THEN 0
+        ELSE (ISNULL(SUM(CASE WHEN ue.Confirm = 1 THEN 1 ELSE 0 END), 0) * 100.0 / @TotalUsers)
+    END AS AverageAttendancePercentage,
+    CASE 
+        WHEN @TotalUsers = 0 THEN 0
+        ELSE ((@TotalUsers - ISNULL(SUM(CASE WHEN ue.Confirm = 1 THEN 1 ELSE 0 END), 0)) * 100.0 / @TotalUsers)
+    END AS NonAttendancePercentage,
+    CASE 
+        WHEN @TotalUsers = 0 THEN 0
+        ELSE (@TotalUsers - ISNULL(SUM(CASE WHEN ue.Confirm = 1 THEN 1 ELSE 0 END), 0))
+    END AS UsersNotAttending
+FROM
+    Eventos e
+LEFT JOIN
+    UserEvents ue ON e.EventoId = ue.IdEvent
+GROUP BY
+    e.Name;
+
+
+            ", connection);
 
                     SqlDataReader reader = await command.ExecuteReaderAsync();
-                    if (await reader.ReadAsync())
+                    List<AttendanceStatistics> statisticsList = new List<AttendanceStatistics>();
+
+                    while (await reader.ReadAsync())
                     {
+                        var eventName = reader["EventName"].ToString();
                         var totalAttendance = reader["TotalAttendance"] != DBNull.Value ? Convert.ToInt32(reader["TotalAttendance"]) : 0;
-                        var totalRegistrations = reader["TotalRegistrations"] != DBNull.Value ? Convert.ToInt32(reader["TotalRegistrations"]) : 0;
+                        var totalNOAttendance = reader["UsersNotAttending"] != DBNull.Value ? Convert.ToInt32(reader["UsersNotAttending"]) : 0;
+                        var totalNOAttendancePercentage = reader["NonAttendancePercentage"] != DBNull.Value ? Convert.ToDouble(reader["NonAttendancePercentage"]) : 0.0;
                         var averageAttendancePercentage = reader["AverageAttendancePercentage"] != DBNull.Value ? Convert.ToDouble(reader["AverageAttendancePercentage"]) : 0.0;
 
-                        return new AttendanceStatistics
+                        statisticsList.Add(new AttendanceStatistics
                         {
+                            EventName = eventName,
                             TotalAttendance = totalAttendance,
-                            TotalRegistrations = totalRegistrations,
-                            AverageAttendancePercentage = averageAttendancePercentage
-                        };
+                            AverageAttendancePercentage = averageAttendancePercentage,
+                            NonAttendancePercentage = totalNOAttendancePercentage,
+                            TotalNoAttendence = totalNOAttendance
+                        });
                     }
-                }
 
-                return null;
+
+                    return statisticsList;
+                }
             }
             catch (Exception ex)
             {
                 throw new Exception("Error al obtener las estadísticas de asistencia", ex);
             }
         }
+
     }
-}
+
+    }
 
 
 
