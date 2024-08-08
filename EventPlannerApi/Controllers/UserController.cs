@@ -97,18 +97,26 @@ namespace EventPlannerApi.Controllers
             try
             {
                 IServiceUsuario service = new ServiceUsuario();
+                var userExist= service.GetByEmail(user.Email);
+                if (userExist != null)
+                {
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    response.Message = " Error Usuario ya exite";
+                    response.Data = null;
+                    return Ok(response);
+                }
 
                 int user1 = await service.Create(user);
 
                 if (user1 == 0)
                 {
                     response.StatusCode = (int)HttpStatusCode.NotFound;
-                    response.Message = "Eventos no encontrados";
+                    response.Message = "Error al crear el usuario";
                 }
                 else
                 {
                     response.StatusCode = (int)HttpStatusCode.OK;
-                    response.Message = "Reporte encontrado";
+                    response.Message = "Usuario creado Correctamente";
                     response.Data = user1;
                 }
 
@@ -205,7 +213,8 @@ namespace EventPlannerApi.Controllers
                 if (user1 == null)
                 {
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    response.Message = "Eventos no encontrados";
+                    response.Message = "Usuario invalido";
+                    return Ok(response);
                 }
                 else
                 {
@@ -214,18 +223,19 @@ namespace EventPlannerApi.Controllers
                         response.StatusCode = (int)HttpStatusCode.Unauthorized;
                         response.Message = "Credenciales invalidas";
                         response.Data = null;
+                        return NotFound(response);
                     }
                     else
                     {
                         response.StatusCode = (int)HttpStatusCode.OK;
                         response.Message = "Credenciales validas";
                         response.Data = user1;
+                        return Ok(response);
 
                     }
 
                 }
 
-                return response.Data == null? NotFound(response): Ok(response);
             }
             catch (Exception e)
             {

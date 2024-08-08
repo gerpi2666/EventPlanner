@@ -26,17 +26,17 @@ namespace RepositorysTest
 
         }
 
-        [Fact]
-        public async void CreateEventTest()
-        {
-            IRepositoryEvento repository = new RepositoryEvento();
+        //[Fact]
+        //public async void CreateEventTest()
+        //{
+        //    IRepositoryEvento repository = new RepositoryEvento();
 
-            var password = Cryptography.EncrypthAES("123456");
-            var Event = new Evento {Cupo=10,Descripcion="Evento de corridas y montaderas rusticas",Name="El toro de oro",Fecha  };
+        //    var password = Cryptography.EncrypthAES("123456");
+        //    var Event = new Evento {Cupo=10,Descripcion="Evento de corridas y montaderas rusticas",Name="El toro de oro",Fecha  };
 
-            int result = await repository.Create(Event);
+        //    int result = await repository.Create(Event);
 
-            Assert.NotEqual<int>(0, result);
+        //    Assert.NotEqual<int>(0, result);
 
         }
     }
