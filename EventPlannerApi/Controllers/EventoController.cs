@@ -31,7 +31,7 @@ namespace EventPlannerApi.Controllers
             ResponseModel response = new ResponseModel();
             try
             {
-                IServiceEvento service = new ServiceEvento(Configuration);
+                IServiceEvento service = new ServiceEvento();
 
                 List<Eventformating> events = await service.GetEventos();
 
