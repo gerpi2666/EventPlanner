@@ -21,7 +21,7 @@ namespace Repositorys.Repositorys
         public RepositoryUsers()
         {
             // Configuration = configuration;
-            cadena = "Data Source=HARUXY\\SQLEXPRESS;Initial Catalog=EventosDB;User ID=sa;Password=123456;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30";
+            cadena = "Data Source=DESKTOP-EFN5H8E;Initial Catalog=EventosDB;User ID=sa;Password=123456;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30";
         }
 
 

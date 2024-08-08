@@ -26,18 +26,58 @@ namespace RepositorysTest
 
         }
 
-        //[Fact]
-        //public async void CreateEventTest()
-        //{
-        //    IRepositoryEvento repository = new RepositoryEvento();
+        [Fact]
+        public async void CreateEventTest()
+        {
+            IRepositoryEvento repository = new RepositoryEvento();
 
-        //    var password = Cryptography.EncrypthAES("123456");
-        //    var Event = new Evento {Cupo=10,Descripcion="Evento de corridas y montaderas rusticas",Name="El toro de oro",Fecha  };
 
-        //    int result = await repository.Create(Event);
+            var evento = new Evento
+            {
+                Cupo = 10,
+                Descripcion = "Evento de corridas y montaderas rusticas",
+                Name = "El toro de oro",
+                Fecha = DateTime.Now,
+                Imagen="223"
+            };
 
-        //    Assert.NotEqual<int>(0, result);
+            int result = await repository.Create(evento);
 
+            Assert.NotEqual<int>(0, result);
+
+        }
+
+        [Fact]
+        public async void RegisterEventTest()
+        {
+            IRepositoryEvento repository = new RepositoryEvento();          
+
+           
+            int userId = 10; 
+            int eventId = 2; 
+
+           
+            string result = await repository.RegisterUserToEventAsync(userId, eventId);
+
+           
+            Assert.Equal("Registrado en el evento con éxito", result);
+
+        }
+
+        [Fact]
+        public async Task UnsubscribeFromEventTest()
+        {
+
+            IRepositoryEvento repository = new RepositoryEvento();
+
+            
+            int userId = 10;
+            int eventId = 2; 
+           
+            int affectedRows = await repository.UnsubscribeFromEvent(userId, eventId);
+
+            
+            Assert.True(affectedRows > 0, "El número de filas afectadas debe ser mayor que 0.");
         }
     }
 }

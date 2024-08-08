@@ -133,7 +133,8 @@ namespace EventPlannerApi.Controllers
             try
             {
                 IServiceUsuario service = new ServiceUsuario();
-                var userExist= service.GetByEmail(user.Email);
+                var userExist= await service.GetByEmail(user.Email);
+                int user1 = 0;
                 if (userExist != null)
                 {
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
@@ -141,8 +142,14 @@ namespace EventPlannerApi.Controllers
                     response.Data = null;
                     return Ok(response);
                 }
+                else
+                {
+                    user.ExpirationDate = DateTime.Now.AddDays(365);
+                    user.Rol = user.Rol==0? 2:user.Rol;
+                    user1 = await service.Create(user);
+                }
 
-                int user1 = await service.Create(user);
+                
 
                 if (user1 == 0)
                 {

@@ -38,7 +38,7 @@ namespace RepositorysTest
 
             var resultAwait = "u6QXcpElu3jBzi22FNFdrw==";
 
-           var result= Cryptography.EncrypthAES("1236456");
+           var result= Cryptography.EncrypthAES("123456");
 
 
             Assert.Equal(resultAwait,result);
@@ -62,7 +62,7 @@ namespace RepositorysTest
         [Fact]
         public async void LoginFailTest()
         {
-            LoginModel login = new LoginModel { Email = "gerpi.2666@gmail.com", Password = "123456" };
+            LoginModel login = new LoginModel { Email = "client1@example.com", Password = "1234567" };
 
             var result = await contoller.Login(login);
 
@@ -104,7 +104,7 @@ namespace RepositorysTest
 
             int expectedValue = 1;
 
-            int result = await repository.ResetPassword("gerpi.2666@gmail.com", "123456");
+            int result = await repository.ResetPassword("gpicado@OUTLOK.net", "123456");
 
             Assert.Equal<int>(expectedValue, result);
 

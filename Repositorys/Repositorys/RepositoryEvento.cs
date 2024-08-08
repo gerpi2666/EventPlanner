@@ -20,7 +20,7 @@ namespace Repositorys.Repositorys
 
         public RepositoryEvento()
         {
-            cadena = "Data Source=HARUXY\\SQLEXPRESS;Initial Catalog=EventosDB;User ID=sa;Password=123456;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30";
+            cadena = "Data Source=DESKTOP-EFN5H8E;Initial Catalog=EventosDB;User ID=sa;Password=123456;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30";
         }
 
         private async Task<List<Evento>> GetAll()
