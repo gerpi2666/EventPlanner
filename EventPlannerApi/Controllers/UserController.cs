@@ -89,6 +89,42 @@ namespace EventPlannerApi.Controllers
             }
         }
 
+
+        [HttpGet]
+        [Route("getByIdP")]
+        public async Task<IActionResult> GetByIdP(int id)
+        {
+            ResponseModel response = new ResponseModel();
+            try
+            {
+                IServiceUsuario service = new ServiceUsuario();
+
+                Usuario user = await service.GetById(id);
+
+                if (user == null)
+                {
+                    response.StatusCode = (int)HttpStatusCode.NotFound;
+                    response.Message = "Eventos no encontrados";
+                }
+                else
+                {
+                    response.StatusCode = (int)HttpStatusCode.OK;
+                    response.Message = "Reporte encontrado";
+                    user.Password = Cryptography.DecrypthAES(user.Password);
+                    response.Data = user;
+                }
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                response.Message = e.Message;
+
+                return StatusCode(response.StatusCode, response);
+            }
+        }
+
         [HttpPost]
         [Route("create")]
         public async Task<IActionResult> Create(Usuario user)
