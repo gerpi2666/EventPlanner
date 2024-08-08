@@ -9,9 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repositorys", "Repositorys\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationCore", "ApplicationCore\ApplicationCore.csproj", "{0339BC5F-380B-4972-B9CA-80C6698083DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepositorysTest", "RepositorysTest\RepositorysTest.csproj", "{05CFEC54-5373-444D-AD43-A45C72E3FCBD}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepositoryTesting", "RepositoryTesting\RepositoryTesting.csproj", "{1B472900-A304-469A-9975-E7E64B9E13FF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventPlannerApiTesting", "RepositorysTest\EventPlannerApiTesting.csproj", "{05CFEC54-5373-444D-AD43-A45C72E3FCBD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +33,6 @@ Global
 		{05CFEC54-5373-444D-AD43-A45C72E3FCBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05CFEC54-5373-444D-AD43-A45C72E3FCBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05CFEC54-5373-444D-AD43-A45C72E3FCBD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1B472900-A304-469A-9975-E7E64B9E13FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1B472900-A304-469A-9975-E7E64B9E13FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1B472900-A304-469A-9975-E7E64B9E13FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1B472900-A304-469A-9975-E7E64B9E13FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

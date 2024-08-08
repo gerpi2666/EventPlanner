@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ApplicationCore\ApplicationCore.csproj" />
+    <ProjectReference Include="..\EventPlannerApi\EventPlannerApi.csproj" />
     <ProjectReference Include="..\Repositorys\Repositorys.csproj" />
   </ItemGroup>
 

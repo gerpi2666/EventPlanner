@@ -209,7 +209,7 @@ namespace EventPlannerApi.Controllers
             ResponseModel response = new ResponseModel();
             IServiceEvento service = new ServiceEvento(Configuration);
             IServiceEmail serviceEmail = new ServiceEmail(EmailConfiguration);
-            IServiceUsuario serviceUsuario = new ServiceUsuario(Configuration);
+            IServiceUsuario serviceUsuario = new ServiceUsuario();
             try
             {
                 string message = await service.RegisterUserToEventAsync(userId, eventId);

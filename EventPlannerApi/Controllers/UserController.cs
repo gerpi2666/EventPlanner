@@ -14,11 +14,11 @@ namespace EventPlannerApi.Controllers
     [Route("User")]
     public class UsersController : ControllerBase
     {
-        private readonly IConfiguration Configuration;
-        public UsersController(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        //private readonly IConfiguration Configuration;
+        //public UsersController(IConfiguration configuration)
+        //{
+        //    Configuration = configuration;
+        //}
 
         [HttpGet]
         [Route("getAll")]
@@ -27,7 +27,8 @@ namespace EventPlannerApi.Controllers
             ResponseModel response = new ResponseModel();
             try
             {
-                IServiceUsuario service = new ServiceUsuario(Configuration);
+
+                IServiceUsuario service = new ServiceUsuario();
 
                 List<Usuario> users = await service.GetAll();
 
@@ -61,7 +62,7 @@ namespace EventPlannerApi.Controllers
             ResponseModel response = new ResponseModel();
             try
             {
-                IServiceUsuario service = new ServiceUsuario(Configuration);
+                IServiceUsuario service = new ServiceUsuario();
 
                 Usuario user = await service.GetById(id);
 
@@ -95,7 +96,7 @@ namespace EventPlannerApi.Controllers
             ResponseModel response = new ResponseModel();
             try
             {
-                IServiceUsuario service = new ServiceUsuario(Configuration);
+                IServiceUsuario service = new ServiceUsuario();
 
                 int user1 = await service.Create(user);
 
@@ -129,7 +130,7 @@ namespace EventPlannerApi.Controllers
             ResponseModel response = new ResponseModel();
             try
             {
-                IServiceUsuario service = new ServiceUsuario(Configuration);
+                IServiceUsuario service = new ServiceUsuario();
 
                 Usuario user1 = await service.Update(user);
 
@@ -163,7 +164,7 @@ namespace EventPlannerApi.Controllers
             ResponseModel response = new ResponseModel();
             try
             {
-                IServiceUsuario service = new ServiceUsuario(Configuration);
+                IServiceUsuario service = new ServiceUsuario();
 
                 int user1 = await service.Delete(id);
 
@@ -197,7 +198,7 @@ namespace EventPlannerApi.Controllers
             ResponseModel response = new ResponseModel();
             try
             {
-                IServiceUsuario service = new ServiceUsuario(Configuration);
+                IServiceUsuario service = new ServiceUsuario();
 
                 Usuario user1 = await service.GetByEmail(user.Email);
 
@@ -219,11 +220,12 @@ namespace EventPlannerApi.Controllers
                         response.StatusCode = (int)HttpStatusCode.OK;
                         response.Message = "Credenciales validas";
                         response.Data = user1;
+
                     }
 
                 }
 
-                return Ok(response);
+                return response.Data == null? NotFound(response): Ok(response);
             }
             catch (Exception e)
             {
@@ -238,7 +240,7 @@ namespace EventPlannerApi.Controllers
         [Route("reset-password")]
         public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
         {
-            IServiceUsuario service = new ServiceUsuario(Configuration);
+            IServiceUsuario service = new ServiceUsuario();
 
             ResponseModel response = new ResponseModel();
             try

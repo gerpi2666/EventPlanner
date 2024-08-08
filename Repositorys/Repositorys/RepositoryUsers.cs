@@ -16,19 +16,21 @@ namespace Repositorys.Repositorys
     public class RepositoryUsers : IRepositoryUsers
     {
 
-        IConfiguration Configuration { get; }
-        public RepositoryUsers(IConfiguration configuration)
+        //IConfiguration Configuration { get; }
+        protected string cadena { get; }
+        public RepositoryUsers()
         {
-            Configuration = configuration;
+            // Configuration = configuration;
+            cadena = "Data Source=DESKTOP-EFN5H8E;Initial Catalog=EventosDB;User ID=sa;Password=123456;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30";
         }
 
-        
+
 
         public async Task<int> Create(Usuario user)
         {
             try
             {
-                string cadena = Configuration.GetConnectionString("DataVoxConnection");
+               // string cadena = Configuration.GetConnectionString("DataVoxConnection");
                 int usuario= 0;
 
                 using (SqlConnection connection = new SqlConnection(cadena))
@@ -38,7 +40,6 @@ namespace Repositorys.Repositorys
                     SqlCommand command = new SqlCommand("InsertUserAndRole", connection);
                     command.CommandType = CommandType.StoredProcedure;
 
-                    // Agregar los parámetros necesarios para el procedimiento almacenado
                     command.Parameters.AddWithValue("@Password", user.Password);
                     command.Parameters.AddWithValue("@Email", user.Email);
                     command.Parameters.AddWithValue("@FechaVencimiento",user.ExpirationDate);
@@ -68,7 +69,8 @@ namespace Repositorys.Repositorys
         {
             try
             {
-                string cadena = Configuration.GetConnectionString("DataVoxConnection");
+               // string cadena = Configuration.GetConnectionString("DataVoxConnection");
+               // string cadena = Configuration;
                 int usuario = 0;
 
                 using (SqlConnection connection = new SqlConnection(cadena))
@@ -107,7 +109,7 @@ namespace Repositorys.Repositorys
             {
                 List<Usuario> users = null;
 
-                string cadena = Configuration.GetConnectionString("DataVoxConnection");
+               // string cadena = Configuration.GetConnectionString("DataVoxConnection");
 
                 using (SqlConnection connection = new SqlConnection(cadena))
                 {
@@ -152,7 +154,7 @@ namespace Repositorys.Repositorys
             try
             {
                 Usuario usuario = null;
-                string cadena = Configuration.GetConnectionString("DataVoxConnection");
+               // string cadena = Configuration.GetConnectionString("DataVoxConnection");
 
                 using (SqlConnection connection = new SqlConnection(cadena))
                 {
@@ -194,7 +196,7 @@ namespace Repositorys.Repositorys
             try
             {
                 Usuario usuario = null;
-                string cadena = Configuration.GetConnectionString("DataVoxConnection");
+              //  string cadena = Configuration.GetConnectionString("DataVoxConnection");
 
                 using (SqlConnection connection = new SqlConnection(cadena))
                 {
@@ -237,7 +239,7 @@ namespace Repositorys.Repositorys
         {
             try
             {
-                string cadena = Configuration.GetConnectionString("DataVoxConnection");
+               // string cadena = Configuration.GetConnectionString("DataVoxConnection");
 
                 using (SqlConnection connection = new SqlConnection(cadena))
                 {
@@ -272,10 +274,10 @@ namespace Repositorys.Repositorys
         {
             try
             {
-                string connectionString = Configuration.GetConnectionString("DataVoxConnection");
+                // string cadena = Configuration.GetConnectionString("DataVoxConnection");
                 int result = 0;
 
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(cadena))
                 {
                     await connection.OpenAsync();
 

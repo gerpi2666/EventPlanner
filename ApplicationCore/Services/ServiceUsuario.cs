@@ -13,9 +13,9 @@ namespace ApplicationCore.Services
     public class ServiceUsuario : IServiceUsuario
     {
         private IRepositoryUsers repository;
-        public ServiceUsuario(IConfiguration configuration)
+        public ServiceUsuario()
         {
-            repository = new RepositoryUsers(configuration);
+            repository = new RepositoryUsers();
         }
 
         public async Task<int> Create(Usuario user)

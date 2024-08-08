@@ -2,25 +2,54 @@ using Repositorys.Models;
 using AplicationCore.Utils;
 using Repositorys.Repositorys;
 using Microsoft.Extensions.Configuration;
+using EventPlannerApi.Controllers;
+using EventPlannerApi.Models;
+using Microsoft.AspNetCore.Mvc;
 
 
 namespace RepositorysTest
 {
     public class UserTest
     {
-        private readonly IConfiguration Configuration;
-        public UserTest(IConfiguration configuration)
+        private readonly UsersController contoller;
+        public UserTest()
         {
-            Configuration = configuration;
+            contoller = new UsersController();
+        }
+
+
+
+        [Fact]
+        public async void LoginSuccessTest()
+        {
+            LoginModel login= new LoginModel { Email= "jperez@email.com", Password="123456"};
+
+            var result= await contoller.Login(login);
+
+
+            Assert.IsType<OkObjectResult>(result);
+
+        }
+
+        [Fact]
+        public async void LoginFailTest()
+        {
+            LoginModel login = new LoginModel { Email = "gerpi.2666@gmail.com", Password = "123456" };
+
+            var result = await contoller.Login(login);
+
+
+            Assert.IsType<NotFoundObjectResult>(result);
+
         }
 
         [Fact]
         public async void CreateUserTest()
         {
-            IRepositoryUsers repository= new RepositoryUsers(Configuration);
+            IRepositoryUsers repository = new RepositoryUsers();
 
-            var password= Cryptography.EncrypthAES("123456");
-            var User = new Usuario { Email = "gpicado@sinertica.net",NombreUsuario="Gerald Picado",Password= password,ExpirationDate= DateTime.Now,Rol=1 };
+            var password = Cryptography.EncrypthAES("123456");
+            var User = new Usuario { Email = "gpicado@OUTLOK.net", NombreUsuario = "Gerald Picado", Password = password, ExpirationDate = DateTime.Now, Rol = 1 };
 
             int result = await repository.Create(User);
 
@@ -28,10 +57,10 @@ namespace RepositorysTest
 
         }
 
+        [Fact]
         public async void DeleteUserTest()
         {
-            IRepositoryUsers repository = new RepositoryUsers(Configuration);
-
+            IRepositoryUsers repository = new RepositoryUsers();
             int expectedValue = 7;
 
             int result = await repository.Delete(7);
@@ -40,16 +69,32 @@ namespace RepositorysTest
 
         }
 
+        [Fact]
         public async void ResetPasswordTest()
         {
-            IRepositoryUsers repository = new RepositoryUsers(Configuration);
+            IRepositoryUsers repository = new RepositoryUsers();
 
             int expectedValue = 1;
 
-            int result = await repository.ResetPassword("gerpi.2666@gmail.com","123456");
+            int result = await repository.ResetPassword("gerpi.2666@gmail.com", "123456");
 
             Assert.Equal<int>(expectedValue, result);
 
         }
+
+        [Fact]
+        public async void GetAllTest()
+        {
+            IRepositoryUsers repository = new RepositoryUsers();
+
+            int expectedValue = 1;
+
+            var result = await repository.GetAll();
+
+            Assert.NotEmpty(result);
+
+
+        }
+
     }
 }
