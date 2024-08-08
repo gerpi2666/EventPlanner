@@ -16,17 +16,18 @@ namespace Repositorys.Repositorys
 {
     public class RepositoryEvento : IRepositoryEvento
     {
-        IConfiguration Configuration { get; }
-        public RepositoryEvento(IConfiguration configuration)
+        protected string cadena { get; }
+
+        public RepositoryEvento()
         {
-            Configuration = configuration;
+            cadena = "Data Source=DESKTOP-EFN5H8E;Initial Catalog=EventosDB;User ID=sa;Password=123456;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30";
         }
 
         private async Task<List<Evento>> GetAll()
         {
             try
             {
-                string cadena = Configuration.GetConnectionString("DataVoxConnection");
+                // string cadena = Configuration.GetConnectionString("DataVoxConnection");
                 List<Evento> eventos = new List<Evento>();
 
                 using (SqlConnection connection = new SqlConnection(cadena))
@@ -71,20 +72,20 @@ namespace Repositorys.Repositorys
         {
             try
             {
-                string cadena = Configuration.GetConnectionString("DataVoxConnection");
+                // string cadena = Configuration.GetConnectionString("DataVoxConnection");
                 List<Evento> eventos = new List<Evento>();
 
                 using (SqlConnection connection = new SqlConnection(cadena))
                 {
-                     connection.Open();
+                    connection.Open();
 
                     SqlCommand command = new SqlCommand("[ObtenerEventosDelAnoActualByCustomer]", connection);
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(new SqlParameter("@UserId", id));
 
 
-                    SqlDataReader reader =  command.ExecuteReader();
-                    while ( reader.Read())
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
                     {
                         Evento evento = new Evento
                         {
@@ -119,7 +120,7 @@ namespace Repositorys.Repositorys
         {
             try
             {
-                string cadena = Configuration.GetConnectionString("DataVoxConnection");
+                // string cadena = Configuration.GetConnectionString("DataVoxConnection");
                 int usuario = 0;
 
                 using (SqlConnection connection = new SqlConnection(cadena))
@@ -160,7 +161,7 @@ namespace Repositorys.Repositorys
         {
             try
             {
-                string cadena = Configuration.GetConnectionString("DataVoxConnection");
+                // string cadena = Configuration.GetConnectionString("DataVoxConnection");
                 int usuario = 0;
 
                 using (SqlConnection connection = new SqlConnection(cadena))
@@ -198,7 +199,7 @@ namespace Repositorys.Repositorys
             try
             {
                 Evento usuario = null;
-                string cadena = Configuration.GetConnectionString("DataVoxConnection");
+                // string cadena = Configuration.GetConnectionString("DataVoxConnection");
 
                 using (SqlConnection connection = new SqlConnection(cadena))
                 {
@@ -239,7 +240,7 @@ namespace Repositorys.Repositorys
             try
             {
                 Evento usuario = null;
-                string cadena = Configuration.GetConnectionString("DataVoxConnection");
+                // string cadena = Configuration.GetConnectionString("DataVoxConnection");
 
                 using (SqlConnection connection = new SqlConnection(cadena))
                 {
@@ -310,7 +311,7 @@ namespace Repositorys.Repositorys
             try
             {
 
-                List<Evento> eventos =  GetEventosCustomer(id);
+                List<Evento> eventos = GetEventosCustomer(id);
 
                 // Agrupar eventos por Activo
                 var eventosAgrupados = eventos
@@ -338,7 +339,7 @@ namespace Repositorys.Repositorys
         {
             try
             {
-                string cadena = Configuration.GetConnectionString("DataVoxConnection");
+                //string cadena = Configuration.GetConnectionString("DataVoxConnection");
                 int usuario = 0;
 
                 using (SqlConnection connection = new SqlConnection(cadena))
@@ -379,10 +380,10 @@ namespace Repositorys.Repositorys
         {
             try
             {
-                string connectionString = Configuration.GetConnectionString("DataVoxConnection");
+                // string connectionString = Configuration.GetConnectionString("DataVoxConnection");
                 int result = 0;
 
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(cadena))
                 {
                     await connection.OpenAsync();
 
@@ -417,13 +418,13 @@ namespace Repositorys.Repositorys
 
         public async Task<string> RegisterUserToEventAsync(int userId, int eventId)
         {
-            string _connectionString = Configuration.GetConnectionString("DataVoxConnection");
+            //string _connectionString = Configuration.GetConnectionString("DataVoxConnection");
 
             int result = -1; // Valor por defecto para indicar que no se ha realizado la operación
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(_connectionString))
+                using (SqlConnection connection = new SqlConnection(cadena))
                 {
                     using (SqlCommand command = new SqlCommand("RegistrarUsuarioEnEvento", connection))
                     {
@@ -453,12 +454,12 @@ namespace Repositorys.Repositorys
 
         public async Task<List<Evento>> GetEventsByUserAsync(int userId)
         {
-            string _connectionString = Configuration.GetConnectionString("DataVoxConnection");
+            //string _connectionString = Configuration.GetConnectionString("DataVoxConnection");
             var eventos = new List<Evento>();
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(_connectionString))
+                using (SqlConnection connection = new SqlConnection(cadena))
                 {
                     using (SqlCommand command = new SqlCommand("ObtenerEventosPorUsuario", connection))
                     {
@@ -506,10 +507,10 @@ namespace Repositorys.Repositorys
         {
             try
             {
-                string connectionString = Configuration.GetConnectionString("DataVoxConnection");
+                //string connectionString = Configuration.GetConnectionString("DataVoxConnection");
                 int affectedRows = 0;
 
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(cadena))
                 {
                     await connection.OpenAsync();
 
@@ -545,7 +546,7 @@ namespace Repositorys.Repositorys
         {
             try
             {
-                string cadena = Configuration.GetConnectionString("DataVoxConnection");
+                //string cadena = Configuration.GetConnectionString("DataVoxConnection");
 
                 using (SqlConnection connection = new SqlConnection(cadena))
                 {
@@ -613,10 +614,10 @@ GROUP BY
             }
         }
 
-       
-    }
 
     }
+
+}
 
 
 

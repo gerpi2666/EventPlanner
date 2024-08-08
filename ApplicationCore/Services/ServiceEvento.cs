@@ -12,9 +12,9 @@ namespace ApplicationCore.Services
     public class ServiceEvento : IServiceEvento
     {
         private IRepositoryEvento repository;
-        public ServiceEvento(IConfiguration configuration)
+        public ServiceEvento()
         {
-            repository = new RepositoryEvento(configuration);
+            repository = new RepositoryEvento();
         }
 
 

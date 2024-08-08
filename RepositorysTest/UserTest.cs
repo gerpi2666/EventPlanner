@@ -31,6 +31,34 @@ namespace RepositorysTest
 
         }
 
+
+        [Fact]
+        public async void CryptografyEncriptedTest()
+        {
+
+            var resultAwait = "u6QXcpElu3jBzi22FNFdrw==";
+
+           var result= Cryptography.EncrypthAES("1236456");
+
+
+            Assert.Equal(resultAwait,result);
+
+        }
+
+
+        [Fact]
+        public async void CryptografyDecriptedTest()
+        {
+
+            var resultAwait = "123456";
+
+            var result = Cryptography.DecrypthAES("u6QXcpElu3jBzi22FNFdrw==");
+
+
+            Assert.Equal(resultAwait, result);
+
+        }
+
         [Fact]
         public async void LoginFailTest()
         {

@@ -17,12 +17,10 @@ namespace EventPlannerApi.Controllers
     [Route("Event")]
     public class EventoController : ControllerBase
     {
-        private readonly IConfiguration Configuration;
         private readonly EmailSetting EmailConfiguration;
 
         public EventoController(IConfiguration configuration,IOptions<EmailSetting> Emn)
         {
-            Configuration = configuration;
             EmailConfiguration = Emn.Value;
         }
 
@@ -67,7 +65,7 @@ namespace EventPlannerApi.Controllers
             ResponseModel response = new ResponseModel();
             try
             {
-                IServiceEvento service = new ServiceEvento(Configuration);
+                IServiceEvento service = new ServiceEvento();
 
                 List<Eventformating> events = await service.GetEventosByCustomer(id);
 
@@ -100,7 +98,7 @@ namespace EventPlannerApi.Controllers
         {
 
             ResponseModel response = new ResponseModel();
-            IServiceEvento service = new ServiceEvento(Configuration);
+            IServiceEvento service = new ServiceEvento();
 
             try
             {
@@ -136,7 +134,7 @@ namespace EventPlannerApi.Controllers
         {
 
             ResponseModel response = new ResponseModel();
-            IServiceEvento service = new ServiceEvento(Configuration);
+            IServiceEvento service = new ServiceEvento();
 
             try
             {
@@ -172,7 +170,7 @@ namespace EventPlannerApi.Controllers
         {
 
             ResponseModel response = new ResponseModel();
-            IServiceEvento service = new ServiceEvento(Configuration);
+            IServiceEvento service = new ServiceEvento();
 
             try
             {
@@ -207,7 +205,7 @@ namespace EventPlannerApi.Controllers
         public async Task<IActionResult> RegisterUserToEvent(int userId, int eventId)
         {
             ResponseModel response = new ResponseModel();
-            IServiceEvento service = new ServiceEvento(Configuration);
+            IServiceEvento service = new ServiceEvento();
             IServiceEmail serviceEmail = new ServiceEmail(EmailConfiguration);
             IServiceUsuario serviceUsuario = new ServiceUsuario();
             try
@@ -264,7 +262,7 @@ namespace EventPlannerApi.Controllers
         {
 
             ResponseModel response = new ResponseModel();
-            IServiceEvento service = new ServiceEvento(Configuration);
+            IServiceEvento service = new ServiceEvento();
             IServiceEmail serviceEmail = new ServiceEmail(EmailConfiguration);
 
             try
@@ -316,7 +314,7 @@ namespace EventPlannerApi.Controllers
         public async Task<IActionResult> GetEventByUser(int usertId)
         {
             ResponseModel response = new ResponseModel();
-            IServiceEvento service = new ServiceEvento(Configuration);
+            IServiceEvento service = new ServiceEvento();
 
             try
             {
@@ -351,7 +349,7 @@ namespace EventPlannerApi.Controllers
         {
             
             ResponseModel response = new ResponseModel();
-            IServiceEvento service = new ServiceEvento(Configuration);
+            IServiceEvento service = new ServiceEvento();
             try
             {
                 var result = await service.UnsubscribeFromEvent(userId, eventId);
@@ -377,7 +375,7 @@ namespace EventPlannerApi.Controllers
         public async Task<IActionResult> GetAttendanceStatistics()
         {
             ResponseModel response = new ResponseModel();
-            IServiceEvento service = new ServiceEvento(Configuration);
+            IServiceEvento service = new ServiceEvento();
 
             try
             {
