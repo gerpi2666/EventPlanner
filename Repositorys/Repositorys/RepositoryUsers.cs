@@ -21,6 +21,9 @@ namespace Repositorys.Repositorys
         {
             Configuration = configuration;
         }
+
+        
+
         public async Task<int> Create(Usuario user)
         {
             try
@@ -186,7 +189,7 @@ namespace Repositorys.Repositorys
             }
         }
 
-        public async Task<Usuario> GetByEmail(string email,string password)
+        public async Task<Usuario> GetByEmail(string email)
         {
             try
             {
@@ -200,7 +203,6 @@ namespace Repositorys.Repositorys
                     var command = new SqlCommand("GetUserWithRoleDescriptionByEmail", connection);
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(new SqlParameter("@Email", email));
-                    command.Parameters.Add(new SqlParameter("@Password", password));
 
                     var reader = command.ExecuteReader();
                     if (reader.Read())

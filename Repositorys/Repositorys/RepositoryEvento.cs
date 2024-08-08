@@ -67,6 +67,53 @@ namespace Repositorys.Repositorys
             }
         }
 
+        private List<Evento> GetEventosCustomer(int id)
+        {
+            try
+            {
+                string cadena = Configuration.GetConnectionString("DataVoxConnection");
+                List<Evento> eventos = new List<Evento>();
+
+                using (SqlConnection connection = new SqlConnection(cadena))
+                {
+                     connection.Open();
+
+                    SqlCommand command = new SqlCommand("[ObtenerEventosDelAnoActualByCustomer]", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@UserId", id));
+
+
+                    SqlDataReader reader =  command.ExecuteReader();
+                    while ( reader.Read())
+                    {
+                        Evento evento = new Evento
+                        {
+                            Id = reader["EventoId"] != DBNull.Value ? Convert.ToInt32(reader["EventoId"].ToString()) : 0,
+                            Name = reader["Name"] != DBNull.Value ? reader["Name"].ToString() : "",
+                            Descripcion = reader["Descripcion"] != DBNull.Value ? reader["Descripcion"].ToString() : "",
+                            Fecha = reader["Fecha"] != DBNull.Value ? Convert.ToDateTime(reader["Fecha"]) : DateTime.MinValue,
+                            Cupo = reader["Cupo"] != DBNull.Value ? Convert.ToInt32(reader["Cupo"]) : 0,
+                            Imagen = reader["Imagen"] != DBNull.Value ? reader["Imagen"].ToString() : "",
+                            Activo = Convert.ToBoolean(reader["Activo"].ToString())
+                        };
+
+                        eventos.Add(evento);
+
+                    }
+                }
+
+                return eventos;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                throw new Exception(dbEx.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
 
         public async Task<int> Create(Evento evento)
         {
@@ -187,6 +234,47 @@ namespace Repositorys.Repositorys
             }
 
         }
+        public async Task<Evento> GetByName(string id)
+        {
+            try
+            {
+                Evento usuario = null;
+                string cadena = Configuration.GetConnectionString("DataVoxConnection");
+
+                using (SqlConnection connection = new SqlConnection(cadena))
+                {
+                    connection.Open();
+
+                    var command = new SqlCommand("[GetEventoByName]", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@Name", id));
+
+                    var reader = command.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        usuario = new Evento();
+                        usuario.Name = reader["Name"] != DBNull.Value ? reader["Name"].ToString() : "";
+                        usuario.Descripcion = reader["Descripcion"] != DBNull.Value ? reader["Descripcion"].ToString() : "";
+                        usuario.Id = reader["EventoId"] != DBNull.Value ? Convert.ToInt32(reader["EventoId"].ToString()) : 0;
+                        usuario.Imagen = reader["Imagen"] != DBNull.Value ? reader["Imagen"].ToString() : "";
+                        usuario.Fecha = reader["Fecha"] != DBNull.Value ? Convert.ToDateTime(reader["Fecha"].ToString()) : DateTime.MinValue;
+                        usuario.Cupo = reader["Cupo"] != DBNull.Value ? Convert.ToInt32(reader["Cupo"].ToString()) : 0;
+                    }
+                }
+
+                return usuario;
+
+            }
+            catch (DbUpdateException dbEx)
+            {
+                throw new Exception(dbEx.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
 
         public async Task<List<Eventformating>> GetEventos()
         {
@@ -194,6 +282,35 @@ namespace Repositorys.Repositorys
             {
 
                 List<Evento> eventos = await GetAll();
+
+                // Agrupar eventos por Activo
+                var eventosAgrupados = eventos
+                    .GroupBy(e => e.Activo)
+                    .Select(g => new Eventformating
+                    {
+                        Activo = g.Key,
+                        Eventos = g.OrderByDescending(e => e.Fecha).ToList()
+                    })
+                    .ToList();
+
+                return eventosAgrupados;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                throw new Exception(dbEx.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<Eventformating>> GetEventosByCustomer(int id)
+        {
+            try
+            {
+
+                List<Evento> eventos =  GetEventosCustomer(id);
 
                 // Agrupar eventos por Activo
                 var eventosAgrupados = eventos
@@ -496,6 +613,7 @@ GROUP BY
             }
         }
 
+       
     }
 
     }

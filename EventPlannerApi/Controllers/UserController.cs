@@ -199,7 +199,7 @@ namespace EventPlannerApi.Controllers
             {
                 IServiceUsuario service = new ServiceUsuario(Configuration);
 
-                Usuario user1 = await service.GetByEmail(user.Email, user.Password);
+                Usuario user1 = await service.GetByEmail(user.Email);
 
                 if (user1 == null)
                 {
@@ -243,24 +243,29 @@ namespace EventPlannerApi.Controllers
             ResponseModel response = new ResponseModel();
             try
             {
+               
 
-                    int result = await service.ResetPassword(request.Email, Cryptography.EncrypthAES(request.NewPassword));
+                 var   result = await service.ResetPassword(request.Email, Cryptography.EncrypthAES(request.NewPassword));
 
-                    if (result == -1)
-                    {
-                        response.StatusCode = (int)HttpStatusCode.BadRequest;
-                        response.Message = "El correo electrónico es incorrecto.";
-                    }
-                    else
-                    {
-                        response.StatusCode = (int)HttpStatusCode.OK;
-                        response.Message = "Contraseña actualizada correctamente.";
-                    }
                 
 
-                    return Ok(response);
+
+                if (result <= 0 )
+                {
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    response.Message = result == -1?"El usuario no exite.":"Error al encontar el usario";
+                    response.Data = null;
                 }
-            
+                else
+                {
+                    response.StatusCode = (int)HttpStatusCode.OK;
+                    response.Message = "Contraseña actualizada correctamente.";
+                }
+
+
+                return Ok(response);
+            }
+
             catch (Exception e)
             {
                 response.StatusCode = (int)HttpStatusCode.InternalServerError;
@@ -273,13 +278,13 @@ namespace EventPlannerApi.Controllers
 
 
 
-       
+
 
 
 
     }
 
-   
+
 }
 
 

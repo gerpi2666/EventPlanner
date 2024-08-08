@@ -10,7 +10,9 @@ namespace ApplicationCore.Services
     public interface IServiceEvento
     {
         Task<List<Eventformating>> GetEventos();
+        Task<List<Eventformating>>  GetEventosByCustomer(int id);
         Task<Evento> GetById(int id);
+        Task<Evento> GetByName(string id);
         Task<int> Create(Evento evento);
         Task<int> Uptade(Evento evento);
         Task<int> Delete(int id);

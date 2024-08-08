@@ -37,6 +37,40 @@ namespace EventPlannerApi.Controllers
 
                 List<Eventformating> events = await service.GetEventos();
 
+                if (events == null && events.Count >= 0)
+                {
+                    response.StatusCode = (int)HttpStatusCode.NotFound;
+                    response.Message = "Eventos no encontrados";
+                }
+                else
+                {
+                    response.StatusCode = (int)HttpStatusCode.OK;
+                    response.Message = "Reporte encontrado";
+                    response.Data = events;
+                }
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                response.Message = e.Message;
+
+                return StatusCode(response.StatusCode, response);
+            }
+        }
+
+        [HttpGet]
+        [Route("ListCustomer")]
+        public async Task<IActionResult> GetAllCustumer(int id)
+        {
+            ResponseModel response = new ResponseModel();
+            try
+            {
+                IServiceEvento service = new ServiceEvento(Configuration);
+
+                List<Eventformating> events = await service.GetEventosByCustomer(id);
+
                 if (events == null && events.Count > 0)
                 {
                     response.StatusCode = (int)HttpStatusCode.NotFound;
@@ -236,12 +270,18 @@ namespace EventPlannerApi.Controllers
             try
             {
                 //int eventId = await service.CreateEvent( descripcion,  fecha, cupo, imagen);
-                int eventId = await service.Create(evento);
+                int eventId = 0;
+                var eventExist = service.GetByName(evento.Name);
+                if (eventExist != null)
+                {
+                    eventId = await service.Create(evento);
 
-                if (eventId <= 0)
+                }
+
+                if (eventId <= 0 || eventExist!= null )
                 {
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    response.Message = "Error al crear el evento.";
+                    response.Message = eventExist != null? "Error ya existe un evento con ese nombre ." : "Error al crear el evento.";
                 }
                 else
                 {

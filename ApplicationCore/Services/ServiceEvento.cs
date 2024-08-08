@@ -68,5 +68,15 @@ namespace ApplicationCore.Services
         {
             return await repository.GetAttendanceStatistics();
         }
+
+        public async Task<List<Eventformating>> GetEventosByCustomer(int id)
+        {
+            return await repository.GetEventosByCustomer(id);
+        }
+
+        public async Task<Evento> GetByName(string id)
+        {
+           return await repository.GetByName(id);
+        }
     }
 }
